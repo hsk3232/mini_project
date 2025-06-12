@@ -1,5 +1,5 @@
 package edu.pnu.domain;
 
 public enum Role {
-	MANAGER, SELLER, MEMBER
+	ROLE_MANAGER, ROLE_SELLER, ROLE_MEMBER
 }

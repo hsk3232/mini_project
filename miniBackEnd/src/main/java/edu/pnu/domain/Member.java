@@ -23,21 +23,20 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class User {
+public class Member {
 
     @Id //PK column
-    private String userId;
+    private String username;
 
     @Column(nullable = false) // not null 설정
     private String password; //비밀번호
 
-    private String name; //가입자 이름
+    private String nickname; //가입자 이름
 
     @Enumerated(EnumType.STRING) //enum 타입 삽입
     private Role role; //권한
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender; //성별
+    private String userGender; //성별
 
     private LocalDate birth; //생일
 
@@ -50,11 +49,6 @@ public class User {
     private LocalDateTime createdAt; //가입일
 
     @UpdateTimestamp // 수정일 자동 기록
-    private LocalDateTime updatedAt; //개인정보 수정일
+    private LocalDateTime loginAt; //마지막 로그인 일
     
-	//User 객체에서만 쓰이는 내부 enum
-	public enum Gender { 
-		MALE, FEMALE
-	}
-	
 }
