@@ -26,7 +26,7 @@ public class MainPageController {
 	@Autowired
 	private GoodsService goodsService;
 	
-	@GetMapping("/") //Principal principal 로그인한 사용자 spring security가 자동으로 넣어줌
+	@GetMapping("/home") //Principal principal 로그인한 사용자 spring security가 자동으로 넣어줌
 	    public MainPageDTO getMainPage(@RequestParam(required = false, defaultValue = "")String keyword, Principal principal) {
 		
         // 사용자 인증 객체에서 Member 조회 (직접 구현했을 경우 예시)

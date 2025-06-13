@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
 public class GoodsDTO {
+	private String imgname;
 	private String productName;
     private int price;
     private String color;
 
     public static GoodsDTO from(Goods goods) {
         return new GoodsDTO(
+        	goods.getImgname(),
             goods.getProductName(),
             goods.getPrice(),
             goods.getColor()
