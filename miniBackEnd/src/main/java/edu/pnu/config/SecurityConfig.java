@@ -61,7 +61,8 @@ public class SecurityConfig {
 
 		return http.build();
 	}
-
+	
+	//Front 접속 허용
 	private CorsConfigurationSource corsSource() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.addAllowedOriginPattern("http://localhost:5173"); // 요청을 허용할 서버
