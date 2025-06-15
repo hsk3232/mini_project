@@ -1,4 +1,4 @@
-package edu.pnu.controll;
+package edu.pnu.controller;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;

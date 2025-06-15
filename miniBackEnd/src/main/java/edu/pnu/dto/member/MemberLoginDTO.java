@@ -1,4 +1,4 @@
-package edu.pnu.dto;
+package edu.pnu.dto.member;
 
 public class MemberLoginDTO {
 

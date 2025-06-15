@@ -19,6 +19,8 @@ import edu.pnu.config.filter.JWTAuthenticationFilter;
 import edu.pnu.config.filter.JWTAuthorizationFilter;
 import edu.pnu.persistence.MemberRepository;
 
+// --------- Security 설정---------//
+
 @Configuration
 public class SecurityConfig {
 	@Bean

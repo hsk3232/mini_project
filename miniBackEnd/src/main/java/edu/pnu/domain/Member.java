@@ -16,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 public class Member {
 
@@ -40,7 +42,7 @@ public class Member {
     @Enumerated(EnumType.STRING) //enum 타입 삽입
     private Role role; //권한
 
-    private String userGender; //성별
+    private String gender; //성별
 
     private LocalDate birth; //생일
 

@@ -1,4 +1,4 @@
-package edu.pnu.service;
+package edu.pnu.service.member;
 
 import java.time.LocalDateTime;
 import java.util.List;

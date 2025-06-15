@@ -1,4 +1,4 @@
-package edu.pnu.dto;
+package edu.pnu.dto.category;
 
 import java.util.List;
 
@@ -8,7 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter @Builder @NoArgsConstructor @AllArgsConstructor
-public class CategoryMidDTO {
-	private String mid;
-	private List<String> detailList; //소분류 리스트
+public class CategoryMainDTO {
+	private String main;
+	private List<CategoryMidDTO> midList; //중분류 리스트
+	
 }

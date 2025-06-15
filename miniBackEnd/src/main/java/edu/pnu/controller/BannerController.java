@@ -1,4 +1,4 @@
-package edu.pnu.controll;
+package edu.pnu.controller;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.pnu.domain.Banner;
-import edu.pnu.service.BannerService;
+import edu.pnu.service.everyone.BannerService;
 import lombok.RequiredArgsConstructor;
 
 @RestController

@@ -1,4 +1,4 @@
-package edu.pnu.dto;
+package edu.pnu.dto.goods;
 
 import edu.pnu.domain.Goods;
 import lombok.AllArgsConstructor;

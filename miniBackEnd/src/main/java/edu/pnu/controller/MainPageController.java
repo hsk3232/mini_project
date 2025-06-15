@@ -1,4 +1,4 @@
-package edu.pnu.controll;
+package edu.pnu.controller;
 
 import java.security.Principal;
 import java.util.List;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.pnu.domain.Member;
-import edu.pnu.dto.GoodsDTO;
 import edu.pnu.dto.MainPageDTO;
-import edu.pnu.service.GoodsService;
-import edu.pnu.service.MainPageService;
+import edu.pnu.dto.goods.GoodsDTO;
+import edu.pnu.service.everyone.GoodsService;
+import edu.pnu.service.everyone.MainPageService;
 import lombok.RequiredArgsConstructor;
 
 @RestController

@@ -1,4 +1,4 @@
-package edu.pnu.service;
+package edu.pnu.service.everyone;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import edu.pnu.domain.Goods;
-import edu.pnu.dto.GoodsDTO;
+import edu.pnu.dto.goods.GoodsDTO;
 import edu.pnu.persistence.GoodsRepository;
 import lombok.RequiredArgsConstructor;
 

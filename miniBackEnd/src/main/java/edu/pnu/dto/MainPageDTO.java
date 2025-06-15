@@ -2,6 +2,9 @@ package edu.pnu.dto;
 
 import java.util.List;
 
+import edu.pnu.dto.category.CategoryDTO;
+import edu.pnu.dto.category.CategoryMainDTO;
+import edu.pnu.dto.goods.GoodsSearchDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

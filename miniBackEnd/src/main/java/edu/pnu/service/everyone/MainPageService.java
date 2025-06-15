@@ -1,4 +1,4 @@
-package edu.pnu.service;
+package edu.pnu.service.everyone;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,12 +14,12 @@ import edu.pnu.domain.Banner;
 import edu.pnu.domain.Goods;
 import edu.pnu.domain.Member;
 import edu.pnu.domain.SearchHistory;
-import edu.pnu.dto.CategoryDTO;
-import edu.pnu.dto.CategoryMainDTO;
-import edu.pnu.dto.CategoryMidDTO;
-import edu.pnu.dto.GoodsSearchDTO;
 import edu.pnu.dto.MainPageDTO;
 import edu.pnu.dto.MainPageGoodsDTO;
+import edu.pnu.dto.category.CategoryDTO;
+import edu.pnu.dto.category.CategoryMainDTO;
+import edu.pnu.dto.category.CategoryMidDTO;
+import edu.pnu.dto.goods.GoodsSearchDTO;
 import edu.pnu.persistence.BannerRepository;
 import edu.pnu.persistence.GoodsRepository;
 import edu.pnu.persistence.SearchHistoryRepository;

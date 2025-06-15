@@ -1,4 +1,4 @@
-package edu.pnu.service;
+package edu.pnu.service.everyone;
 
 import java.util.List;
 
