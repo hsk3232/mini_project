@@ -16,9 +16,6 @@ public class ImgConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/api/public/img/goods/**")
 				.addResourceLocations("file:c:/workspace-fullstack/projectDB/img/goods"); // 위치 설정
 		
-		// 광고 이미지
-		registry.addResourceHandler("/api/public/img/banner/**")
-		.addResourceLocations("file:c:/workspace-fullstack/projectDB/img/banner"); // 위치 설정
 	}
 
 }

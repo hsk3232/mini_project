@@ -11,4 +11,19 @@ public class MemberController {
 		
 		return"";
 	}
+	
+	@PostMapping("/login")
+	public String getLogin() {
+		return "로그인 성공";
+	}
+	
+	@PostMapping("/member")
+	public String getMember() {
+		return "member";
+	}
+	
+	@PostMapping("/admin")
+	public String getAdmin() {
+		return "admin";
+	}
 }

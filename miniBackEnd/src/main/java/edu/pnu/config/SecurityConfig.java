@@ -39,8 +39,8 @@ public class SecurityConfig {
 		// CSRF 보호 비활성화
 		http.csrf(csrf -> csrf.disable());
 		http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/public/**").permitAll()
-				.requestMatchers("/member/**").authenticated().requestMatchers("/seller/**").hasRole("SELLER")
-				.requestMatchers("/manager/**").hasRole("MANAGER")
+				.requestMatchers("/member/**").authenticated()
+				.requestMatchers("/admin/**").hasRole("ADMIN")
 
 		);
 		// Form을 이용한 로그인을 사용하지 않겠다는 명시적 설정

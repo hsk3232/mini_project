@@ -35,13 +35,32 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response); // 필터를 그냥 통과
 			return;
 		}
+
 		String jwtToken = srcToken.replace("Bearer ", ""); // 토큰에서 “Bearer ”를 제거
 		// 토큰에서 username 추출
-		String username = JWT.require(Algorithm.HMAC256("edu.pnu.jwt")).build().verify(jwtToken).getClaim("username")
-				.asString();
+
+		String username = null;
+		try {
+			// 토큰 검증 과정 try-catch로 감싸기 (만료된 토큰 등 예외 처리)
+			username = JWT.require(Algorithm.HMAC256("edu.pnu.jwt")).build().verify(jwtToken).getClaim("username")
+					.asString();
+		} catch (Exception e) {
+			// 예외가 발생하면 로그 출력 후 필터 체인 그냥 통과
+			System.out.println("JWT 예외 발생: " + e.getMessage());
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		if (username == null) {
+			// 🔥 토큰에 username이 없을 경우도 예외로 처리
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		Optional<Member> opt = memberRepository.findById(username); // 토큰에서 얻은 username으로 DB를 검색해서 사용자를 검색
 		if (!opt.isPresent()) { // 사용자가 존재하지 않는다면
 			filterChain.doFilter(request, response); // 필터를 그냥 통과
+			System.out.println("사용자가 없다.");
 			return;
 		}
 

@@ -1,5 +1,7 @@
 package edu.pnu.dto.category;
 
+import java.util.List;
+
 import edu.pnu.domain.Goods;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,4 +23,6 @@ public class CategoryDTO {
 				.categorycode(g.getCategorycode())
 				.build();
 	}
+	
+	
 }

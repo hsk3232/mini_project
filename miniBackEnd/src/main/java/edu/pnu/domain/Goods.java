@@ -27,7 +27,7 @@ public class Goods {
 	private String color;
 	private String print;
 	
-	@Column(name = "product_name")
+	@Column(name = "productname")
 	private String productName;
 	
 	private int price;
