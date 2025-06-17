@@ -12,5 +12,5 @@ public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Lo
     List<SearchHistory> findTop5ByMemberOrderBySearchedAtDesc(Member member);
 
     void deleteByMemberAndIdNotIn(Member member, List<Long> keepIds);
-	
+
 }

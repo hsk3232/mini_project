@@ -7,17 +7,17 @@ import org.springframework.data.jpa.domain.Specification;
 import edu.pnu.domain.Goods;
 
 public class CategorySpecification {
-
+	
     public static Specification<Goods> hasMain(String main) {
         return (root, query, cb) -> cb.equal(root.get("main"), main);
     }
 
-    public static Specification<Goods> hasMid(String mid) {
-        return (root, query, cb) -> cb.equal(root.get("mid"), mid);
+    public static Specification<Goods> hasMidIn(List<String> mid) {
+        return (root, query, cb) -> root.get("mid").in(mid);
     }
 
-    public static Specification<Goods> hasDetail(String detail) {
-        return (root, query, cb) -> cb.equal(root.get("detail"), detail);
+    public static Specification<Goods> hasDetailIn(List<String> detail) {
+        return (root, query, cb) -> root.get("detail").in(detail);
     }
 
     public static Specification<Goods> hasGender(List<String> gender) {
@@ -44,26 +44,33 @@ public class CategorySpecification {
             }
         };
     }
+    
+    public static Specification<Goods> hasProductName(String keyword) {
+        return (root, query, cb) -> cb.like(cb.lower(root.get("productName")), "%" + keyword.toLowerCase() + "%");
+    }
+
 
     public static Specification<Goods> filterBy(
     	    String main,
-    	    String mid,
-    	    String detail,
+    	    List<String> mid,
+    	    List<String> detail,
     	    List<String> gender,
     	    List<String> color,
     	    List<String> print,
             Integer minPrice,
-            Integer maxPrice
+            Integer maxPrice,
+            String keyword
     	) {
     	    Specification<Goods> spec = (root, query, cb) -> cb.conjunction(); // 빈 조건에서 시작
-
+    	
     	    if (main != null && !main.isEmpty()) spec = spec.and(hasMain(main));
-    	    if (mid != null && !mid.isEmpty()) spec = spec.and(hasMid(mid));
-    	    if (detail != null && !detail.isEmpty()) spec = spec.and(hasDetail(detail));
+    	    if (mid != null && !mid.isEmpty()) spec = spec.and(hasMidIn(mid));
+    	    if (detail != null && !detail.isEmpty()) spec = spec.and(hasDetailIn(detail));
     	    if (gender != null && !gender.isEmpty()) spec = spec.and(hasGender(gender));
     	    if (color != null && !color.isEmpty()) spec = spec.and(hasColorIn(color));
     	    if (print != null && !print.isEmpty()) spec = spec.and(hasPrintIn(print));
     	    if (minPrice != null || maxPrice != null) spec = spec.and(hasPriceBetween(minPrice, maxPrice));
+    	    if (keyword != null && !keyword.isBlank()) spec = spec.and(hasProductName(keyword)); // 키워드 검색 조건 추가
 
     	    return spec;
     	}

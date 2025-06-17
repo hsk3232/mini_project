@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,19 +38,10 @@ public class CategoryController {
 	// 상품 카테고리 필터 조회용: 메인 > (중분류) > (소분류)
 	@GetMapping("/category/goods")
 	public List<GoodsDTO> filterGoods(
-			@RequestParam(required = false) String main,
-			@RequestParam(required = false) String mid, 
-			@RequestParam(required = false) String detail,
-			@RequestParam(required = false) List<String> gender, 
-			@RequestParam(required = false) List<String> color,
-			@RequestParam(required = false) List<String> print, 
-			@RequestParam(required = false) Integer minPrice,
-			@RequestParam(required = false) Integer maxPrice, Principal principal
-
-	) {
-		SearchFilterDTO filter = SearchFilterDTO.builder().main(main).mid(mid).detail(detail).gender(gender)
-				.color(color).print(print).minPrice(minPrice).maxPrice(maxPrice).build();
-				
-		 return searchService.getFilteredSearchResults(filter);
-	}
+		    @ModelAttribute SearchFilterDTO filter, // 자동 바인딩 (keyword 미포함 시 null)
+		    Principal principal,
+		    @RequestParam(defaultValue = "register") String orderBy
+		) {
+		    return searchService.getFilteredSearchResults(filter, null, "register");
+		}
 }

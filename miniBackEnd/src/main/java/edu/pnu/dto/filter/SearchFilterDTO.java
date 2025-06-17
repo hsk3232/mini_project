@@ -15,8 +15,8 @@ import lombok.Setter;
 public class SearchFilterDTO {
 		private String keyword; // 검색어
 	    private String main;
-	    private String mid;
-	    private String detail;
+	    private List<String> mid;
+	    private List<String> detail;
 	    private List<String> gender;
 	    private List<String> color;
 	    private List<String> print;
