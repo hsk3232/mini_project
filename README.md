@@ -39,6 +39,6 @@
 
 |컬럼명|설명|프론트 사용 용도|
 |---|---|---|
-|`goods_id`|상품 고유 ID (`Goods.java`의 PK와 연결됨)|상품 묶음 구분용 키|
-|`image_url`|실제 이미지 URL (`/api/public/img/goods/...`)|`<img src="도메인 + image_url">`|
-|`is_main`|true면 메인 이미지, false면 서브 이미지|썸네일과 상세 이미지 구분|
+|`imgname`|상품 고유 ID (`Goods.java`의 PK와 연결됨)|상품 묶음 구분용 키|
+|`imgurl`|실제 이미지 URL (`/api/public/img/goods/...`)|`<img src="도메인 + image_url">`|
+|`ismain`|true면 메인 이미지, false면 서브 이미지|썸네일과 상세 이미지 구분|
