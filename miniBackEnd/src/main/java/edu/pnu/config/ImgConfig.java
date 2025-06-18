@@ -14,7 +14,7 @@ public class ImgConfig implements WebMvcConfigurer {
 
 		// 상품 이미지
 		registry.addResourceHandler("/api/public/img/goods/**")
-				.addResourceLocations("file:c:/workspace-fullstack/projectDB/img/goods/**"); // 위치 설정
+				.addResourceLocations("file:c:/workspace-fullstack/projectDB/img/goods/"); // 위치 설정
 		
 	}
 

@@ -28,9 +28,14 @@ public class MemberJoinDTO  {
     
     public Member toEntity() {
         return Member.builder()
-            .username(this.username)
-            .password(this.password)
-            .email(this.email)
-            .build();
-    }
+                .username(username)
+                .password(password)
+                .nickname(nickname)
+                .role(role)
+                .gender(gender)
+                .birth(birth)
+                .email(email)
+                .phone(phone)
+                .build();
+        }
 }
