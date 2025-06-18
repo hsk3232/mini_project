@@ -1,12 +1,8 @@
 package edu.pnu.domain;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,25 +14,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
+@Getter 
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="searchhistory")
-public class SearchHistory {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long seq;
 
-	private String keyword;
+@Table(name="Goodsoption")
+public class GoodsOption {
 	
-	@Column(name="searchedat")
-	private LocalDateTime searchedAt;
+	@Id
+    @Column(length = 100)
+    private String uniquecode; // 옵션 고유코드(PK)
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "username")
-	private Member member;
+    private String imgname; // FK
+
+    private String fullcode;
+    private String size;
+    private Integer stock;
+
+    // N:1 (imgname으로 goods와 연결)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "imgname", referencedColumnName = "imgname", insertable = false, updatable = false)
+    private Goods goods;
 }

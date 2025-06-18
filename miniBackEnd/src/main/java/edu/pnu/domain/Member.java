@@ -58,6 +58,8 @@ public class Member {
     private LocalDateTime loginAt; //마지막 로그인 일
     
     // serchHistory와 1:n mapping
+    // cascade = CascadeType.ALL, orphanRemoval = true → 회원 삭제 시, 해당 회원의 검색기록도 모두 삭제
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SearchHistory> searchHistory = new ArrayList<>();
     

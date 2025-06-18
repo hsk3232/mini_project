@@ -1,6 +1,5 @@
 package edu.pnu.service.member;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,16 +14,19 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService{
-	@Autowired
-	private MemberRepository memRepo;
-	
-	
+
+	private final MemberRepository memberRepo;
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Member member = memRepo.findById(username)
+		Member member = memberRepo.findById(username)
 				.orElseThrow(()->new UsernameNotFoundException("못찾겠다.."));
+		
 		return new User(member.getUsername(), member.getPassword(),
 				AuthorityUtils.createAuthorityList(member.getRole().toString()));
 	}
-
+	
+	public void postSign(Member member) {
+		memberRepo.save(member);
+	}
 }

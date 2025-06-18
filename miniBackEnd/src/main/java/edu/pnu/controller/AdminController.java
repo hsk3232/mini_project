@@ -9,18 +9,10 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
-
-public class MemberController {
+@RequestMapping("/api/admin")
+public class AdminController {
 	
-	private final MemberService memberService;
-	
-	@GetMapping("/info")
-	public String getMember() {
-		return "member";
-	}
-	
-	@GetMapping("/admin")
+	@GetMapping
 	public String getAdmin() {
 		return "admin";
 	}

@@ -39,8 +39,8 @@ public class SecurityConfig {
 		// CSRF 보호 비활성화
 		http.csrf(csrf -> csrf.disable());
 		http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/public/**").permitAll()
-				.requestMatchers("/member/**").authenticated()
-				.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/api/member/**").authenticated()
+				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 
 		);
 		// Form을 이용한 로그인을 사용하지 않겠다는 명시적 설정
@@ -76,6 +76,7 @@ public class SecurityConfig {
 		config.addExposedHeader(HttpHeaders.AUTHORIZATION); // Header에 Authorization을 추가하기 위해서는 필요
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config); // 위 설정을 적용할 Rest 서버의 URL 패턴 설정
+		System.out.println("[front 연결 성공]");
 		return source;
 	}
 

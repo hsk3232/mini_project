@@ -1,7 +1,5 @@
 package edu.pnu.domain;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,25 +16,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
+@Getter 
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="searchhistory")
-public class SearchHistory {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long seq;
+@Table(name = "imgadress")
+public class ImgAdress {
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long seq;  // 여러 이미지 저장을 위해 auto-increment PK
 
-	private String keyword;
-	
-	@Column(name="searchedat")
-	private LocalDateTime searchedAt;
+	    private String imgname; // FK
+	    @Column(name="imgurl")
+	    private String imgUrl;
+	    private boolean ismain;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "username")
-	private Member member;
+	    // N:1 (imgname으로 goods와 연결)
+	    @ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name = "imgname", referencedColumnName = "imgname", insertable = false, updatable = false)
+	    private Goods goods;
 }

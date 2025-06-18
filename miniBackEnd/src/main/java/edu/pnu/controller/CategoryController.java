@@ -37,11 +37,11 @@ public class CategoryController {
 
 	// 상품 카테고리 필터 조회용: 메인 > (중분류) > (소분류)
 	@GetMapping("/category/goods")
-	public List<GoodsDTO> filterGoods(
+	public List<GoodsDTO> getCategoryfilterAndSearchAndSort(
 		    @ModelAttribute SearchFilterDTO filter, // 자동 바인딩 (keyword 미포함 시 null)
 		    Principal principal,
-		    @RequestParam(defaultValue = "register") String orderBy
+		    @RequestParam(defaultValue = "register") String sort
 		) {
-		    return searchService.getFilteredSearchResults(filter, null, "register");
+		    return searchService.getfilterSearch(filter, null, sort);
 		}
 }

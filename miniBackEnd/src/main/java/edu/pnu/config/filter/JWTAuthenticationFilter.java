@@ -1,7 +1,6 @@
 package edu.pnu.config.filter;
 
 import java.io.IOException;
-
 import java.util.Date;
 
 import org.springframework.http.HttpHeaders;
@@ -22,15 +21,22 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor => 롬복 생성자는 8080/login으로 연결되기 때문에 url 바꾸려면 직접 생성자를 선언해야함.
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 	// 인증 객체, fillter 객체는 컨테이너에 올리지 못함
 	// 따라서 autowired 못함
 	private final AuthenticationManager authenticationManager;
+	
+	//생성자 직접 선언
+	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+	        super(authenticationManager);
+	        this.authenticationManager = authenticationManager;
+	        // 이 줄이 있어야 /api/public/login으로 POST 요청 시 필터가 동작!
+	        setFilterProcessesUrl("/api/public/login");
+	    }
 	
 	// POST/login 요청이 왔을 때 인증을 시도하는 메소드
 	@Override
