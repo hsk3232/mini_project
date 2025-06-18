@@ -17,6 +17,7 @@ public class GoodsController {
 	
 	@GetMapping("/popular")
 	public AdGoodsDTO getPopularGoods() {
+		
 		return goodsService.getPopularGoods(); 
 	}
 	

@@ -1,4 +1,4 @@
-package edu.pnu.config;
+package edu.pnu.service.member;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

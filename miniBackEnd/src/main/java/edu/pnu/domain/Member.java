@@ -43,7 +43,7 @@ public class Member {
     private Role role; //권한
 
     private String gender; //성별
-
+    
     private LocalDate birth; //생일
 
     private String email; //e-Mail 주소
@@ -51,10 +51,11 @@ public class Member {
     private String phone; //전화번호
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(updatable = false, name="createdat")
     private LocalDateTime createdAt; //가입일
 
     @UpdateTimestamp // 수정일 자동 기록
+    @Column(name="loginat")
     private LocalDateTime loginAt; //마지막 로그인 일
     
     // serchHistory와 1:n mapping
