@@ -25,6 +25,7 @@ public class SearchService {
     public List<GoodsDTO> getfilterSearch(SearchFilterDTO dto, Member member, String sort) {
     	Sort sortObj;
     	
+    	System.out.println("[진입] : [SearchService] 키워드 기반 검색 진입 \n");
     	// 1-1. 정렬
     	switch (sort) {
         case "priceAsc" -> sortObj = Sort.by(Sort.Direction.ASC, "price");
@@ -55,7 +56,7 @@ public class SearchService {
     	    spec = spec.and(CategorySpecification.hasProductName(dto.getKeyword()));
     	    if (member != null) {
     	    	searchHistoryService.saveSearchKeyword(dto.getKeyword(), member);
-    	    	System.out.println("[회원 검색어 정보 전달 완료]");
+    	    	System.out.println("[성공] : [SearchService] 회원 검색어 정보 전달 완료");
     	    }
     	}
     	

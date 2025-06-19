@@ -42,12 +42,12 @@ public class SearchController {
 
 			@ModelAttribute SearchFilterDTO dto, // ✅ 자동 바인딩 처리
 			Principal principal, 
-			@RequestParam(defaultValue = "register") String sort) {
+			@RequestParam(defaultValue = "newest") String sort) {
 
 		Member member = null;
 		if (principal != null) {
 			member = memberRepo.findByUsername(principal.getName()).orElse(null);
-			System.out.println("[회원 정보를 찾았다.]");
+			System.out.println("[성공] : [SearchController] 회원 정보를 찾았다. \n");
 		}
 
 		// 쿼리 파라미터를 DTO로 수동 매핑 => @ModelAttribute로 인해 필요 없어짐.

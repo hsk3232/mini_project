@@ -20,15 +20,14 @@ public class GoodsDetailController {
 	
 	@GetMapping("/detail/{imgname}")
 	public ResponseEntity<?> getGoodsDetail(@PathVariable String imgname) {
-	    System.out.println("[진입] : [상품 상세 페이지 진입]");
+	    System.out.println("[진입] : [GoodsDetailController][상품 상세 페이지 진입]");
 	    try {
 	        GoodsDTO dto = goodsDetailService.getGoodsDetail(imgname);
-	        System.out.println("[성공] : [상품 상세 페이지 조회 완료]" + "\n");
+	        System.out.println("[성공] : [GoodsDetailController][상품 상세 페이지 조회 완료]" + "\n");
 	        return ResponseEntity.ok(dto);
-	    } catch (IllegalArgumentException e) {
-	        System.out.println("[오류 / 실패] : [상품 상세 페이지 조회 불가]" + e.getMessage());
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                .body(e.getMessage()); // 메시지만 내려줌
+	    } catch (Exception  e) {
+	        System.out.println("[오류] : [GoodsDetailController][상품 상세 페이지 조회 불가]" + e.getMessage() + "\n");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 메시지만 내려줌
 	        
 	    }
 	}

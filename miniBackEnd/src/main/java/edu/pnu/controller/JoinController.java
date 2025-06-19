@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.pnu.domain.Member;
 import edu.pnu.dto.member.MemberJoinDTO;
 import edu.pnu.service.member.JoinService;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,31 @@ public class JoinController {
 	private final JoinService joinService;
 		
 	@PostMapping("/join")
-	public ResponseEntity<String> join(@RequestBody MemberJoinDTO dto) {
+	public ResponseEntity<?> join(@RequestBody MemberJoinDTO dto) {
 		try {
-	        joinService.postJoinSave(dto);
-	        return ResponseEntity.ok("[성공] : [회원 가입 성공]" + "\n");
+			joinService.postJoinSave(dto);
+	        return ResponseEntity.ok("[성공] : [JoinController] 회원 가입 성공 \n");
 	    } catch (IllegalArgumentException e) {
 	        // 메시지만 응답
-	    	System.out.println("[경고/오류] : [이미 사용 중인 아이디입니다.]" + "\n");
+	    	System.out.println("[경고/오류] : [JoinController] 이미 사용 중인 아이디입니다. \n");
 	        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 	    }
+	}
+	
+	@PostMapping("/join/idsearch")
+	public ResponseEntity<?> postJoinIdSearch(@RequestBody Member member) {
+
+		String username = member.getUsername();
+		
+		if(joinService.postJoinIdSearch(username)) {
+			System.out.println("[경고/오류] : [JoinController][이미 사용 중인 아이디입니다.]" + "\n");
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		System.out.println("[성공] : [JoinController] 사용할 수 있는 아이디 검색^^ \n");
+        return ResponseEntity.status(HttpStatus.OK).build();
+  
+    	
+	    
 	}
 	 
 	

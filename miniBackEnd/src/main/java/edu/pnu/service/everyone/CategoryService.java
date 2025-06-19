@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import edu.pnu.domain.Goods;
@@ -16,10 +15,7 @@ import edu.pnu.dto.category.CategoryListResponseDTO;
 import edu.pnu.dto.category.CategoryMainDTO;
 import edu.pnu.dto.category.CategoryMidDTO;
 import edu.pnu.dto.category.CategoryTreeResponseDTO;
-import edu.pnu.dto.filter.SearchFilterDTO;
-import edu.pnu.dto.goods.GoodsDTO;
 import edu.pnu.persistence.GoodsRepository;
-import edu.pnu.specification.CategorySpecification;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,7 +26,8 @@ public class CategoryService {
 
 	// 1. 카테고리 Tree
 	public CategoryTreeResponseDTO getCategoryTrees(String keyword) {
-
+		System.out.println("[진입] : [CategoryService] 카테고리Tree 진입");
+		
 		Map<String, Map<String, Set<String>>> map = new LinkedHashMap<>();
 		for (Goods g : goodsRepo.findAll()) {
 			map.computeIfAbsent(g.getMain(), k -> new LinkedHashMap<>())
@@ -46,8 +43,9 @@ public class CategoryService {
 			}
 			categoryTree.add(new CategoryMainDTO(main, midList));
 		}
+		System.out.println("[성공] : [CategoryService] 카테고리Tree 로드 완료 \n");
 		return CategoryTreeResponseDTO.builder().categoryTree(categoryTree).build();
-
+		
 	}
 
 	

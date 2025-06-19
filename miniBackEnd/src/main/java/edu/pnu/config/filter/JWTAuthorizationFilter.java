@@ -30,15 +30,20 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
+		System.out.println("[진입] : [JWTAuthorizationFilter] 토큰 확인 필터 진입");
+		
 		String srcToken = request.getHeader(HttpHeaders.AUTHORIZATION); // 요청 헤더에서 Authorization을 얻어온다.
 		if (srcToken == null || !srcToken.startsWith("Bearer ")) { // 없거나 “Bearer ”로 시작하지 않는다면
+			System.out.println("[진입] : [JWTAuthorizationFilter] 토큰 없음");
 			filterChain.doFilter(request, response); // 필터를 그냥 통과
 			return;
 		}
+		System.out.println("[완료] : [JWTAuthorizationFilter] 토큰 확인 완료");
+		
 
 		String jwtToken = srcToken.replace("Bearer ", ""); // 토큰에서 “Bearer ”를 제거
 		// 토큰에서 username 추출
-		System.out.println("[username(id) 추출 시작]");
+		System.out.println("[진행] : [JWTAuthorizationFilter] username(id) 추출 시작");
 
 		String username = null;
 		try {
@@ -47,7 +52,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 					.asString();
 		} catch (Exception e) {
 			// 예외가 발생하면 로그 출력 후 필터 체인 그냥 통과
-			System.out.println("JWT 예외 발생: " + e.getMessage());
+			System.out.println("[오류] : [JWTAuthorizationFilter] JWT 오류 발생" + e.getMessage());
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -59,16 +64,16 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 		}
 
 		Optional<Member> opt = memberRepository.findById(username); // 토큰에서 얻은 username으로 DB를 검색해서 사용자를 검색
-		System.out.println("[username(id) 검색 시작]");
+		System.out.println("[진행] : [JWTAuthorizationFilter] username(id) 검색 시작");
 		if (!opt.isPresent()) { // 사용자가 존재하지 않는다면
 			filterChain.doFilter(request, response); // 필터를 그냥 통과
-			System.out.println("사용자가 없다.");
+			System.out.println("[오류] : [JWTAuthorizationFilter]사용자가 없다.");
 			return;
-		} System.out.println("[사용자 찾음]");
+		} System.out.println("[진행] : [JWTAuthorizationFilter] 사용자 찾음");
 		
 
 		Member findmember = opt.get();
-		System.out.println("ROLE 값: " + findmember.getRole());
+		System.out.println("[진행] : [JWTAuthorizationFilter] ROLE 값: [" + findmember.getRole()+"]");
 
 
 		try {
@@ -76,12 +81,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 		        AuthorityUtils.createAuthorityList("ROLE_" + findmember.getRole().toString()));
 		    Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 		    SecurityContextHolder.getContext().setAuthentication(auth);
-		    System.out.println("[SecurityContext 등록 완료]");
+		    System.out.println("[성공] : [JWTAuthorizationFilter] SecurityContext 등록 완료"+ "\n");
 		    filterChain.doFilter(request, response);
-		    System.out.println("[토큰 확인 완료]");
+		    System.out.println("[성공] : [JWTAuthorizationFilter] 토큰 확인 완료\n");
 		} catch (Exception e) {
 		    e.printStackTrace();
-		    System.out.println("[예외 발생!]");
+		    System.out.println("[오류] : [JWTAuthorizationFilter] 예외 발생!"+"\n");
 		}
 	}
 }

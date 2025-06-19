@@ -12,5 +12,7 @@ public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Lo
     List<SearchHistory> findTop5ByMemberOrderBySearchedAtDesc(Member member);
 
     void deleteByMemberAndSeqNotIn(Member member, List<Long> seqs);
+    
+    boolean existsByMemberAndKeyword(Member member, String keyword);
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import edu.pnu.dto.member.MemberUpdateDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -63,5 +65,18 @@ public class Member {
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SearchHistory> searchHistory = new ArrayList<>();
+
+    
+    public void updateFromDTO(MemberUpdateDTO dto) {
+        if (dto.getNickname() != null) setNickname(dto.getNickname());
+        if (dto.getEmail() != null) setEmail(dto.getEmail());
+        if (dto.getGender() != null) setGender(dto.getGender());
+        if (dto.getPhone() != null) setPhone(dto.getPhone());
+    }
+    
+    
+	//user1명이 여러 상품에 리뷰를 남길 수 있음.
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Review> review = new ArrayList<>();
     
 }

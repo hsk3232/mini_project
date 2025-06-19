@@ -40,8 +40,10 @@ public class CategoryController {
 	public List<GoodsDTO> getCategoryfilterAndSearchAndSort(
 		    @ModelAttribute SearchFilterDTO filter, // 자동 바인딩 (keyword 미포함 시 null)
 		    Principal principal,
-		    @RequestParam(defaultValue = "register") String sort
-		) {
+		    @RequestParam(defaultValue = "newest") String sort) {
+		
+		
+		System.out.println("[성공] : [CategoryController] 상품 카테고리 필터 조회 \n");
 		    return searchService.getfilterSearch(filter, null, sort);
 		}
 }
