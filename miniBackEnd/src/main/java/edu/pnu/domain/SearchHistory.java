@@ -20,7 +20,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -35,7 +35,7 @@ public class SearchHistory {
 	
 	@Column(name="searchedat")
 	private LocalDateTime searchedAt;
-
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "username")
 	private Member member;

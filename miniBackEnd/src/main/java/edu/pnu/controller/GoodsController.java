@@ -1,7 +1,7 @@
 package edu.pnu.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +30,15 @@ public class GoodsController {
 			return null;
 		}
 	}
+	
+	@GetMapping("/recommend")
+	public AdGoodsDTO getRecommendGoods(@AuthenticationPrincipal User user) {
+		// SecurityContext에 주입되는 principal(첫 번째 인자) => User(Spring Security의 User) 타입
+		// 토큰 인증을 받아야 함으로 이렇게 써야함. 대신 User user 쓸 때는 id와 인가 정보 외에는 없음.
+		System.out.println("[진입] : [GoodsController] 추천 상품 진입 ");
+		return goodsService.getRecommendGoods(user);
+	}
+	
 
 
 }

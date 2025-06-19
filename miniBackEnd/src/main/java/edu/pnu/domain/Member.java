@@ -20,13 +20,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter 
 @Setter
-@ToString
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -62,6 +61,7 @@ public class Member {
     
     // serchHistory와 1:n mapping
     // cascade = CascadeType.ALL, orphanRemoval = true → 회원 삭제 시, 해당 회원의 검색기록도 모두 삭제
+    @ToString.Exclude // 순환참조의 경우 사용
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SearchHistory> searchHistory = new ArrayList<>();

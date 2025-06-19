@@ -9,8 +9,10 @@ import edu.pnu.domain.SearchHistory;
 
 public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Long> {
 	
-    List<SearchHistory> findTop5ByMemberOrderBySearchedAtDesc(Member member);
+	List<SearchHistory> findTop5ByMemberUsernameOrderBySearchedAtDesc(String username);
 
+	List<SearchHistory> findTop5ByMemberOrderBySearchedAtDesc(Member member);
+	
     void deleteByMemberAndSeqNotIn(Member member, List<Long> seqs);
     
     boolean existsByMemberAndKeyword(Member member, String keyword);

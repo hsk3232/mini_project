@@ -44,12 +44,8 @@ public class MemberController {
         return "정보 수정 완료";
     }
 
-	@GetMapping("/recommend")
-	public AdGoodsDTO getRecommendGoods(@AuthenticationPrincipal Member member) {
-		System.out.println("[진입] : [GoodsController] 추천 상품 진입 ");
-		return goodsService.getRecommendGoods(member);
-	}
-
+	
+	
     
     
     // 3. 내 구매내역
