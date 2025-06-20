@@ -1,124 +1,352 @@
-# 📘 API 엔드포인트 매핑 정리
-### 🛍️ GoodsController
-
-| 엔드포인트 URL              | 메서드 이름              | 설명          |
-| ---------------------- | ------------------- | ----------- |
-| `/api/goods/popular`   | `getPopularGoods`   | 인기 상품 목록 조회 |
-| `/api/goods/recommend` | `getRecommendGoods` | 추천 상품 목록 조회 |
-
+# 📚 API 엔드포인트/JSON/코드 정리
 
 ---
 
-### 🗂️ CategoryController
+## 1️⃣ API 엔드포인트 표 (컨트롤러별)
 
-| 엔드포인트 URL                    | 메서드 이름             | 설명             |
-| ---------------------------- | ------------------ | -------------- |
-| `/api/category/categoryTree` | `getCategoryTrees` | 카테고리 트리 조회     |
-| `/api/category/category`     | `getCategoryList`  | 전체 카테고리 리스트 조회 |
-
-
----
-
-### 👤 MemberController
-
-| 엔드포인트 URL                | 메서드 이름      | 설명            |
-| ------------------------ | ----------- | ------------- |
-| `/api/member/sign`       | `postSign`  | 회원가입          |
-| `/api/member/login`      | `getLogin`  | 로그인           |
-| `/api/member/memberinfo` | `getMember` | 현재 로그인된 회원 정보 |
-
-
----
-
-### 🔍 SearchController
-
-| 엔드포인트 URL  | 메서드 이름 | 설명          |
-| ---------- | ------ | ----------- |
-| (추가 정리 필요) | -      | 검색 관련 기능 처리 |
-
+| 컨트롤러                | 엔드포인트 URL                   | HTTP 방식 | 주요 파라미터/Body                       | 응답/설명                        |
+|------------------------|----------------------------------|----------|------------------------------------------|-----------------------------------|
+| CartController         | `/api/cart/add`                  | POST     | optionId, quantity, member               | 장바구니에 상품 추가 (CartDTO 등) |
+|                        | `/api/cart/list`                 | GET      | member                                   | 장바구니 전체 목록 반환           |
+|                        | `/api/cart/remove`               | POST     | optionId, member                         | 장바구니 상품 삭제                |
+| CategoryController     | `/api/category/categoryTree`     | GET      | 없음                                     | 카테고리 트리 반환                |
+|                        | `/api/category/category`         | GET      | 없음                                     | 전체 카테고리 리스트              |
+| GoodsController        | `/api/goods/popular`             | GET      | 없음                                     | 인기 상품 목록 반환               |
+|                        | `/api/goods/recommend`           | GET      | 없음                                     | 추천 상품 목록 반환               |
+|                        | `/api/goods/list`                | GET      | 필터 파라미터 (카테고리 등)              | 상품 전체 목록 반환               |
+|                        | `/api/goods/register`            | POST     | 상품 정보 (GoodsDTO 등)                   | 상품 등록                         |
+|                        | `/api/goods/delete/{imgname}`    | DELETE   | imgname (PathVariable)                    | 상품 삭제                         |
+| JoinController         | `/api/member/sign`               | POST     | 회원정보 (회원가입DTO)                     | 회원가입 처리, 성공/실패 응답     |
+| SearchController       | `/api/public/search`             | GET      | main, mid, detail, gender, color, print, keyword, price 등 | 상품 검색 결과 반환     |
+| AdminController        | `/api/admin/goods/approve`       | POST     | 상품정보, 승인정보                        | 상품 승인 처리                    |
+|                        | `/api/admin/member/list`         | GET      | 없음                                     | 회원 전체 리스트 반환             |
+| OrderController        | `/api/order/create`              | POST     | 주문 정보(OrderDTO 등)                    | 주문 생성, 주문결과 반환          |
+|                        | `/api/order/list`                | GET      | 회원정보 등                               | 주문 내역 리스트 반환             |
+| GoodsDetailController  | `/api/goods/detail/{imgname}`    | GET      | imgname (Path)                            | 상품 상세정보 반환                |
+| MemberController       | `/api/member/login`              | POST/GET | username, password                        | 로그인, 토큰/정보 반환            |
+|                        | `/api/member/memberinfo`         | GET      | 없음                                     | 회원 정보 반환                    |
+|                        | `/api/member/logout`             | POST/GET | 없음                                     | 로그아웃 처리                     |
 
 ---
 
-## 🧩 프론트에서 사용하는 이미지 정보 매핑
+## 2️⃣ 주요 엔드포인트별 JSON 예시
 
-| 컬럼명       | 설명                                      | 프론트 사용 예시                                     |
-| --------- | --------------------------------------- | --------------------------------------------- |
-| `imgname` | 상품 코드 (`Goods.java`의 PK, 예: 108775015)  | 상품별 이미지 구분 키                                  |
-| `imgurl`  | 이미지 상대 경로 (예: `108/108775015_main.jpg`) | `<img src="/api/public/img/goods/ + imgurl">` |
-| `ismain`  | true면 대표 이미지, false면 서브 이미지             | 썸네일(대표)/상세 이미지 구분용                            |
+### 🛍️ 상품 등록 (POST `/api/goods/register`)
 
+```json
+{
+  "imgname": "108775015_main.jpg",
+  "productname": "오버핏 반팔 티셔츠",
+  "brand": "유니클로",
+  "category": "top",
+  "price": 25000,
+  "description": "여름용 오버핏 티셔츠",
+  "options": [
+    {
+      "optionid": "108775015_S",
+      "size": "S",
+      "color": "white",
+      "stock": 10
+    },
+    {
+      "optionid": "108775015_M",
+      "size": "M",
+      "color": "white",
+      "stock": 15
+    }
+  ]
+}
+```
+**응답:**
+```json
+{
+  "result": "success",
+  "goodsid": "108775015"
+}
+```
 
+---
 
+### 🛒 장바구니 추가 (POST `/api/cart/add`)
+
+```json
+{
+  "optionid": "108775015_M",
+  "quantity": 2
+}
+```
+**응답:**
+```json
+{
+  "result": "success",
+  "cartitem": {
+    "optionid": "108775015_M",
+    "quantity": 2,
+    "productname": "오버핏 반팔 티셔츠",
+    "imgurl": "/api/public/img/goods/108/108775015_main.jpg"
+  }
+}
+```
+
+---
+
+### 👤 회원가입 (POST `/api/member/sign`)
+
+```json
+{
+  "username": "user14",
+  "password": "1234",
+  "nickname": "이지은",
+  "role": "ROLE_MEMBER",
+  "gender": "FEMALE",
+  "birth": "2002-11-21",
+  "email": "testuser14@example.com",
+  "phone": "010-2345-6789"
+}
+```
+**응답:**
+```json
+{
+  "result": "success",
+  "message": "회원가입이 완료되었습니다."
+}
+```
+
+---
+
+### 🔎 상품 검색 (GET `/api/public/search`)
+
+**예시 요청:**  
+`/api/public/search?main=top&gender=FEMALE&color=white&keyword=티셔츠`
+
+**응답:**
+```json
+[
+  {
+    "imgname": "108775015_main.jpg",
+    "productname": "오버핏 반팔 티셔츠",
+    "brand": "유니클로",
+    "category": "top",
+    "price": 25000,
+    "options": [
+      { "optionid": "108775015_S", "size": "S", "color": "white", "stock": 10 },
+      { "optionid": "108775015_M", "size": "M", "color": "white", "stock": 15 }
+    ],
+    "viewcount": 120
+  }
+]
+```
+
+---
+
+### 📦 상품 상세 (GET `/api/goods/detail/{imgname}`)
+
+```json
+{
+  "imgname": "108775015_main.jpg",
+  "productname": "오버핏 반팔 티셔츠",
+  "brand": "유니클로",
+  "category": "top",
+  "price": 25000,
+  "description": "여름용 오버핏 티셔츠",
+  "options": [
+    { "optionid": "108775015_S", "size": "S", "color": "white", "stock": 10 },
+    { "optionid": "108775015_M", "size": "M", "color": "white", "stock": 15 }
+  ],
+  "viewcount": 120
+}
+```
+
+---
+
+### 📝 주문 생성 (POST `/api/order/create`)
+
+```json
+{
+  "username": "user14",
+  "orderlist": [
+    { "optionid": "108775015_S", "quantity": 1 },
+    { "optionid": "108775044_L", "quantity": 2 }
+  ],
+  "name": "이지은",
+  "zip": "12345",
+  "address1": "부산광역시 금정구 중앙대로1719번길 13",
+  "address2": "103동 1003호",
+  "phone": "010-2345-6789",
+  "payment": "card"
+}
+```
+**응답:**
+```json
+{
+  "result": "success",
+  "orderid": 132
+}
+```
+
+---
+
+### 👤 로그인 (POST `/api/member/login`)
+
+```json
+{
+  "username": "user14",
+  "password": "1234"
+}
+```
+**응답:**
+```json
+{
+  "result": "success",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+}
+```
+
+---
+
+## 3️⃣ Java DTO 예시
+
+### GoodsDTO
+
+```java
+public class GoodsDTO {
+    private String imgname;
+    private String productname;
+    private String brand;
+    private String category;
+    private int price;
+    private String description;
+    private List<GoodsOptionDTO> options;
+    private int viewcount;
+}
+```
+
+### GoodsOptionDTO
+
+```java
+public class GoodsOptionDTO {
+    private String optionid;
+    private String size;
+    private String color;
+    private int stock;
+}
+```
+
+### OrderDTO
+
+```java
+public class OrderDTO {
+    private String username;
+    private List<OrderItemDTO> orderlist;
+    private String name;
+    private String zip;
+    private String address1;
+    private String address2;
+    private String phone;
+    private String payment;
+}
+```
 
 ```
-edu.pnu
 📁 src
-└── 📁 main
-    ├── 📁 java
-    │   └── 📁 edu.pnu
-    │        ├── 📁 config
-    │        │    ├── 📄 ImgConfig.java                 // ✅ 정적 이미지 경로 설정
-    │        │    └── 📄 SecurityConfig.java            // ✅ Spring Security 설정
-    │        │
-    │        ├── 📁 config.filter
-    │        │    ├── 📄 JWTAuthenticationFilter.java   // ✅ 로그인 필터
-    │        │    └── 📄 JWTAuthorizationFilter.java    // ✅ 인증 필터
-    │        │
-    │        ├── 📁 controller
-    │        │    ├── 📄 MainPageController.java        // ✅ 메인 페이지
-    │        │    ├── 📄 GoodsController.java           // ✅ 상품(목록, 상세, 검색)
-    │        │    ├── 📄 UserController.java            // ✅ 회원가입/로그인/정보
-    │        │    ├── 📄 CategoryController.java        // ✅ 카테고리 관련
-    │        │    ├── 📄 ❗️MyPageController.java         // [구현 필요] 마이페이지
-    │        │    ├── 📄 ❗️CartController.java           // [구현 필요] 장바구니
-    │        │    └── 📄 ❗️AdminController.java          // [구현 필요] 관리자용
-    │        │
-    │        ├── 📁 dto
-    │        │    ├── 📄 MainPageDTO.java               // ✅ 메인 페이지 전체 DTO
-    │        │    ├── 📄 MainPageGoodsDTO.java          // ✅ 인기/추천 상품 DTO
-    │        │    ├── 📄 CategoryDTO.java               // ✅ 카테고리 DTO
-    │        │    ├── 📄 GoodsSearchDTO.java            // ✅ 검색 결과 DTO
-    │        │    ├── 📄 GoodsDetailDTO.java            // ✅ 상품 상세 DTO
-    │        │    ├── 📄 MemberSignDTO.java             // ✅ 회원가입 DTO
-    │        │    ├── 📄 ImgAdressDTO.java              // ✅ 이미지 DTO
-    │        │    ├── 📄 ❗️FindIdDTO.java               // [구현 필요] 아이디 찾기
-    │        │    └── 📄 ❗️ResetPasswordDTO.java        // [구현 필요] 비밀번호 재설정
-    │        │
-    │        ├── 📁 domain
-    │        │    ├── 📄 Goods.java                     // ✅ 상품 Entity
-    │        │    ├── 📄 GoodsOption.java               // ✅ 상품 옵션 Entity
-    │        │    ├── 📄 ImgAdress.java                 // ✅ 이미지 Entity
-    │        │    ├── 📄 Member.java                    // ✅ 회원 Entity
-    │        │    ├── 📄 Banner.java                    // ✅ 배너 Entity
-    │        │    ├── 📄 SearchHistory.java             // ✅ 검색 기록 Entity
-    │        │    ├── 📄 Role.java                      // ✅ 권한 Entity
-    │        │    ├── 📄 ❗️Order.java                   // [구현 필요] 주문
-    │        │    ├── 📄 ❗️Cart.java                    // [구현 필요] 장바구니
-    │        │    └── 📄 ❗️Notice.java                  // [구현 필요] 공지사항
-    │        │
-    │        ├── 📁 persistence
-    │        │    ├── 📄 GoodsRepository.java           // ✅ 상품 JPA
-    │        │    ├── 📄 GoodsOptionRepository.java     // ✅ 옵션 JPA
-    │        │    ├── 📄 ImgAdressRepository.java       // ✅ 이미지 JPA
-    │        │    ├── 📄 MemberRepository.java          // ✅ 회원 JPA
-    │        │    ├── 📄 BannerRepository.java          // ✅ 배너 JPA
-    │        │    ├── 📄 SearchHistoryRepository.java   // ✅ 검색 기록 JPA
-    │        │    ├── 📄 ❗️OrderRepository.java         // [구현 필요] 주문 JPA
-    │        │    ├── 📄 ❗️CartRepository.java          // [구현 필요] 장바구니 JPA
-    │        │    └── 📄 ❗️NoticeRepository.java        // [구현 필요] 공지사항 JPA
-    │        │
-    │        └── 📁 service
-    │             ├── 📄 MainPageService.java           // ✅ 메인 페이지 서비스
-    │             ├── 📄 GoodsService.java              // ✅ 상품 서비스
-    │             ├── 📄 ImgAdressService.java          // ✅ 이미지 서비스
-    │             ├── 📄 MemberService.java             // ✅ 회원 서비스
-    │             ├── 📄 ServiceUserDetailsService.java // ✅ Spring Security 인증
-    │             ├── 📄 ❗️OrderService.java            // [구현 필요] 주문 서비스
-    │             └── 📄 ❗️CartService.java             // [구현 필요] 장바구니 서비스
-    │
-    └── 📁 resources
-         ├── 📄 application.properties                 // ✅ DB 등 환경설정
-         └── 📁 static/                                // (실제 사용 X, 외부 이미지 경로 사용 중)
+    ├── 📁 main
+    │   ├── 📁 java
+    │   │   └── 📁 edu
+    │   │       └── 📁 pnu
+    │   │           ├── 📄 MiniBackEndApplication.java
+    │   │           ├── 📁 config
+    │   │           │   ├── 📄 ImgConfig.java
+    │   │           │   ├── 📄 SecurityConfig.java
+    │   │           │   └── 📁 filter
+    │   │           │       ├── 📄 JWTAuthenticationFilter.java
+    │   │           │       └── 📄 JWTAuthorizationFilter.java
+    │   │           ├── 📁 controller
+    │   │           │   ├── 📄 AdminController.java
+    │   │           │   ├── 📄 CartController.java
+    │   │           │   ├── 📄 CategoryController.java
+    │   │           │   ├── 📄 GoodsController.java
+    │   │           │   ├── 📄 GoodsDetailController.java
+    │   │           │   ├── 📄 JoinController.java
+    │   │           │   ├── 📄 MemberController.java
+    │   │           │   ├── 📄 OrderController.java
+    │   │           │   └── 📄 SearchController.java
+    │   │           ├── 📁 domain
+    │   │           │   ├── 📄 Cart.java
+    │   │           │   ├── 📄 CartItem.java
+    │   │           │   ├── 📄 Goods.java
+    │   │           │   ├── 📄 GoodsOption.java
+    │   │           │   ├── 📄 ImgAdress.java
+    │   │           │   ├── 📄 Member.java
+    │   │           │   ├── 📄 OrderItem.java
+    │   │           │   ├── 📄 OrderList.java
+    │   │           │   ├── 📄 QnA.java
+    │   │           │   ├── 📄 Review.java
+    │   │           │   ├── 📄 Role.java
+    │   │           │   ├── 📄 SearchHistory.java
+    │   │           │   └── 📄 WishList.java
+    │   │           ├── 📁 dto
+    │   │           │   ├── 📁 Orders
+    │   │           │   │   ├── 📄 OrderItemDTO.java
+    │   │           │   │   ├── 📄 OrderListDTO.java
+    │   │           │   │   ├── 📄 OrderRequestDTO.java
+    │   │           │   │   └── 📄 ReviewDTO.java
+    │   │           │   ├── 📁 cart
+    │   │           │   │   ├── 📄 CartDTO.java
+    │   │           │   │   └── 📄 CartItemDTO.java
+    │   │           │   ├── 📁 category
+    │   │           │   │   ├── 📄 CategoryDTO.java
+    │   │           │   │   ├── 📄 CategoryDetailDTO.java
+    │   │           │   │   ├── 📄 CategoryListResponseDTO.java
+    │   │           │   │   ├── 📄 CategoryMainDTO.java
+    │   │           │   │   ├── 📄 CategoryMidDTO.java
+    │   │           │   │   └── 📄 CategoryTreeResponseDTO.java
+    │   │           │   ├── 📁 filter
+    │   │           │   │   └── 📄 SearchFilterDTO.java
+    │   │           │   ├── 📁 goods
+    │   │           │   │   ├── 📄 AdGoodsDTO.java
+    │   │           │   │   ├── 📄 GoodsDTO.java
+    │   │           │   │   ├── 📄 GoodsOptionDTO.java
+    │   │           │   │   └── 📄 ImgAdressDTO.java
+    │   │           │   ├── 📁 member
+    │   │           │   │   ├── 📄 MemberJoinDTO.java
+    │   │           │   │   └── 📄 MemberUpdateDTO.java
+    │   │           │   └── 📁 search
+    │   │           │       └── 📄 SearchResultsDTO.java
+    │   │           ├── 📁 persistence
+    │   │           │   ├── 📄 CartRepository.java
+    │   │           │   ├── 📄 GoodsOptionRepository.java
+    │   │           │   ├── 📄 GoodsRepository.java
+    │   │           │   ├── 📄 MemberRepository.java
+    │   │           │   ├── 📄 OrderListRepository.java
+    │   │           │   └── 📄 SearchHistoryRepository.java
+    │   │           ├── 📁 service
+    │   │           │   ├── 📁 everyone
+    │   │           │   │   ├── 📄 CategoryService.java
+    │   │           │   │   ├── 📄 GoodsDetailService.java
+    │   │           │   │   ├── 📄 GoodsService.java
+    │   │           │   │   └── 📄 SearchService.java
+    │   │           │   └── 📁 member
+    │   │           │       ├── 📄 CartService.java
+    │   │           │       ├── 📄 JoinService.java
+    │   │           │       ├── 📄 MemberService.java
+    │   │           │       ├── 📄 OrderService.java
+    │   │           │       ├── 📄 SearchHistoryService.java
+    │   │           │       └── 📄 SecurityUserDetailsService.java
+    │   │           ├── 📁 specification
+    │   │           │   └── 📄 CategorySpecification.java
+    │   │           └── 📁 util
+    │   │               └── 📄 GoodsImgUtil.java
+    │   └── 📁 resources
+    │       ├── 📄 application.properties
+    │       ├── 📁 static
+    │       └── 📁 templates
+    └── 📁 test
+        └── 📁 java
+            └── 📁 edu
+                └── 📁 pnu
+                    ├── 📄 MemberRepositoryTest.java
+                    ├── 📄 MiniBackEndApplicationTests.java
+                    └── 📄 RandomViewCountTest.java
 
 ```
 
