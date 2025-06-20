@@ -28,7 +28,7 @@ public class CartService {
 
 	// 1. 장바구니 DB 저장 메서드
 	@Transactional
-	public void addToCart(String username, List<CartItemDTO> items) {
+	public void addToCart(List<CartItemDTO> items, String username) {
 
 		Member member = memberRepo.findByUsername(username)
 				.orElseThrow(() -> new IllegalArgumentException("회원 없음: " + username));
@@ -41,12 +41,12 @@ public class CartService {
 			GoodsOption option = goodsOptionRepo.findById(d.getOptionid())
 					.orElseThrow(() -> new IllegalArgumentException("옵션 없음: " + d.getOptionid()));
 
-			CartItem item = cartItemRepo.findByCartAndGoodsOption_Optionid(cart, d.getOptionid()).orElse(null);
+			CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(d.getOptionid(), cart).orElse(null);
 
 			if (item != null) {
 				item.setQuantity(item.getQuantity() + d.getQuantity());
 			} else {
-				CartItem newItem = new CartItem(cart, option, d.getQuantity());
+				CartItem newItem = new CartItem(option, cart, d.getQuantity());
 				cartItemRepo.save(newItem);
 			}
 		}
@@ -81,12 +81,12 @@ public class CartService {
 	
 	
 	 @Transactional
-	    public void deleteItemFromCart(String username, String optionid) {
+	    public void deleteItemFromCart(String optionid, String username) {
 	       
 	        Cart cart = cartRepo.findByMember_Username(username)
 	            .orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
 
-	        CartItem item = cartItemRepo.findByCartAndGoodsOption_Optionid(cart, optionid)
+	        CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionid, cart)
 	            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 장바구니에 없음"));
 
 	        cartItemRepo.delete(item);

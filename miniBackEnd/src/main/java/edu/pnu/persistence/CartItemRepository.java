@@ -9,7 +9,7 @@ import edu.pnu.domain.Cart;
 import edu.pnu.domain.CartItem;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
-	Optional<CartItem> findByCartAndGoodsOption_Optionid(Cart cart, String optionid);
+	Optional<CartItem> findByGoodsOption_OptionidAndCart(String optionid, Cart cart);
 	
 	List<CartItem> findByCart(Cart cart);
 }

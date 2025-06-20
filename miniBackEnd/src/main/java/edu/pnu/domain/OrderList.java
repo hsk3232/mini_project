@@ -35,11 +35,7 @@ public class OrderList {
     private LocalDateTime orderdate;
     private String orderstatus;
     private int total;
-    private String name;
-    private String zip;
-    private String address1;
-    private String address2;
-    private String phone;
+    
     private String payment;
 
     @OneToMany(mappedBy = "orderList", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -48,4 +44,9 @@ public class OrderList {
     // 리뷰도 필요하면 그대로 둬도 됨
     @OneToMany(mappedBy = "orderList", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> review = new ArrayList<>();
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private OrderAddress address;
 }

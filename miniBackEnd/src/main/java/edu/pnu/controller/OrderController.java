@@ -26,8 +26,11 @@ public class OrderController {
 	    @PostMapping("/orders")
 	    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO requestDTO, Principal principal) {
 	        // principal에서 username 꺼내서 member 조회 (생략)
+	    	System.out.println("[진입] : [OrderController] 주문하기 진입");
+	    	
 	        Member member = memberRepo.findByUsername(principal.getName()).orElse(null);
 	        OrderList order = orderService.createOrder(member, requestDTO.getItems(), requestDTO.getOrderInfo());
+	        
 	        System.out.println("[성공] : [OrderController] 주문 완료");
 	        return ResponseEntity.ok(order.getOrderid());
 	    }

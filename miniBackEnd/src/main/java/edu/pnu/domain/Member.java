@@ -89,4 +89,7 @@ public class Member {
     
 	@OneToMany(mappedBy = "member")
 	private List<OrderList> orderLists;
+	
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<OrderAddress> addresses = new ArrayList<>();
 }

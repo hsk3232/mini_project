@@ -34,10 +34,12 @@ public class CartController {
         log.info("[진입] : [CartController] 카트 리스트 진입");
         String username = principal.getName();
         System.out.println(dto.toString());
-    	cartService.addToCart(username, dto.getItems());
+    	cartService.addToCart(dto.getItems(), username);
         System.out.println("[성공] : [CartController] 장바구니 담기 완료 \n");
         return ResponseEntity.ok().build();
     }
+    
+    
     
     @GetMapping("/cart/list")
     public ResponseEntity<?> getCart(Principal principal) {
@@ -58,17 +60,21 @@ public class CartController {
     	System.out.println("[진입] : [CartController] 선택 삭제 진입");
 	    
     	String username = principal.getName();
-	    cartService.deleteItemFromCart(username, optionid);
+	    cartService.deleteItemFromCart(optionid, username);
 	    
 	    System.out.println("[성공] : [CartController] 선택 삭제 성공 \n");
 	    return ResponseEntity.ok().build();
 	}
     
+    
+    
     @DeleteMapping("/cart/remove")
     public ResponseEntity<?> deleteClearCart(Principal principal) {
     	System.out.println("[진입] : [CartController] 전체 삭제 진입");
-        String username = principal.getName();
+        
+    	String username = principal.getName();
         cartService.deleteClearCart(username);
+        
         System.out.println("[성공] : [CartController] 전체 삭제 성공 \n");
         return ResponseEntity.ok().build();
     }

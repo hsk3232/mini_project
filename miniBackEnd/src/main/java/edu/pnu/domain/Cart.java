@@ -41,19 +41,8 @@ public class Cart {
 	private List<CartItem> cartItems = new ArrayList<>();
 	
 	
-	
-	
 	public Cart(Member member) {
 	    this.member = member;
-	}
-	
-	public CartItem findItem(String optionid) {
-	    for (CartItem item : cartItems) {
-	        if (item.getGoodsOption().getOptionid().equals(optionid)) {
-	            return item;
-	        }
-	    }
-	    return null;
 	}
 	
 }

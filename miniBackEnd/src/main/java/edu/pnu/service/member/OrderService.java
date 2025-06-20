@@ -24,6 +24,8 @@ public class OrderService {
     @Transactional
     public OrderList createOrder(Member member, List<OrderItemDTO> itemDTOs, OrderListDTO orderListDTO) {
         // 1. 주문 생성
+    	System.out.println("[진입] : [OrderService] 주문 내역 생성");
+    	
         OrderList order = OrderList.builder()
             .member(member)
             .orderstatus("주문완료")
