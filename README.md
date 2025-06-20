@@ -6,26 +6,27 @@
 
 | 컨트롤러                | 엔드포인트 URL                   | HTTP 방식 | 주요 파라미터/Body                       | 응답/설명                        |
 |------------------------|----------------------------------|----------|------------------------------------------|-----------------------------------|
-| CartController         | `/api/cart/add`                  | POST     | optionId, quantity, member               | 장바구니에 상품 추가 (CartDTO 등) |
-|                        | `/api/cart/list`                 | GET      | member                                   | 장바구니 전체 목록 반환           |
-|                        | `/api/cart/remove/{optionid}`    | POST     | optionId, member                         | 장바구니 상품 선택 삭제               |
-|                        | `/api/cart/remove`               | POST     | member                                   | 장바구니 상품 전체 삭제                |
-| CategoryController     | `/api/category/categoryTree`     | GET      | 없음                                     | 카테고리 트리 반환                |
-|                        | `/api/category/category`         | GET      | 없음                                     | 전체 카테고리 리스트              |
-| GoodsController        | `/api/goods/popular`             | GET      | 없음                                     | 인기 상품 목록 반환               |
-|                        | `/api/goods/recommend`           | GET      | 없음                                     | 추천 상품 목록 반환               |
-|                        | `/api/goods/list`                | GET      | 필터 파라미터 (카테고리 등)              | 상품 전체 목록 반환               |
-|                        | `/api/goods/register`            | POST     | 상품 정보 (GoodsDTO 등)                   | 상품 등록                         |
-|                        | `/api/goods/delete/{imgname}`    | DELETE   | imgname (PathVariable)                    | 상품 삭제                         |
+| CartController         | `/api/member/cart/add`                  | POST     | optionId, quantity, member               | 장바구니에 상품 추가 (CartDTO 등) |
+|                        | `/api/member/cart/list`                 | GET      | member                                   | 장바구니 전체 목록 반환           |
+|                        | `/api/member/cart/remove/{optionid}`    | POST     | optionId, member                         | 장바구니 상품 선택 삭제               |
+|                        | `/api/member/cart/remove`               | POST     | member                                   | 장바구니 상품 전체 삭제                |
+| CategoryController     | `/api/public/categoryTree`     | GET      | 없음                                     | 카테고리 트리 반환                |
+|                        | `/api/public/category`         | GET      | 없음                                     | 전체 카테고리 리스트              |
+| GoodsController        | `/api/public/popular`             | GET      | 없음                                     | 인기 상품 목록 반환               |
+|                        | `/api/public/recommend`           | GET      | 없음                                     | 추천 상품 목록 반환               |
+|                        | `/api/public/detail/{imgname}` | GET        | imgname                          | 상품 상세 페이지
+|                        | `/api/public/category/goods`                | GET      | 필터 파라미터 (카테고리 등)              | 상품 전체 목록 반환               |
 | JoinController         | `/api/member/sign`               | POST     | 회원정보 (회원가입DTO)                     | 회원가입 처리, 성공/실패 응답     |
 | SearchController       | `/api/public/search`             | GET      | main, mid, detail, gender, color, print, keyword, price 등 | 상품 검색 결과 반환     |
 | AdminController        | `/api/admin/goods/approve`       | POST     | 상품정보, 승인정보                        | 상품 승인 처리                    |
 |                        | `/api/admin/member/list`         | GET      | 없음                                     | 회원 전체 리스트 반환             |
-| OrderController        | `/api/order/orders`              | POST     | 주문 정보(OrderDTO 등)                    | 주문 생성, 주문결과 반환          |
-|                        | `/api/order/list`                | GET      | 회원정보 등                               | 주문 내역 리스트 반환             |
-| GoodsDetailController  | `/api/goods/detail/{imgname}`    | GET      | imgname (Path)                            | 상품 상세정보 반환                |
+|                        | `/api/admin/register`            | POST     | 상품 정보 (GoodsDTO 등)                   | 상품 등록                         |
+|                        | `/api/admin/delete/{imgname}`    | DELETE   | imgname (PathVariable)                    | 상품 삭제                         |
+| OrderController        | `/api/member/orders`              | POST     | 주문 정보(OrderDTO 등)                    | 주문 생성, 주문결과 반환          |
+|                        | `/api/member/list`                | GET      | 회원정보 등                               | 주문 내역 리스트 반환             |
+| GoodsDetailController  | `/api/public/detail/{imgname}`    | GET      | imgname (Path)                            | 상품 상세정보 반환                |
 | MemberController       | `/api/member/login`              | POST/GET | username, password                        | 로그인, 토큰/정보 반환            |
-|                        | `/api/member/memberinfo`         | GET      | 없음                                     | 회원 정보 반환                    |
+|                        | `/api/member/info`                | GET      | 없음                                     | 회원 정보 반환                    |
 |                        | `/api/member/logout`             | POST/GET | 없음                                     | 로그아웃 처리                     |
 
 
