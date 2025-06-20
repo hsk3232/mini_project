@@ -27,7 +27,7 @@ public class GoodsService {
 	public AdGoodsDTO getPopularGoods() {
 		
 		List<Goods> allPopularGoods = goodsRepo.findAllByOrderByViewcountDesc(); // 인기순으로 정렬.
-		System.out.println("[성공] : [GoodsService] 인기 순으로 정렬 완료 ");
+		System.out.println("[성공] : [GoodsService] 인기 순으로 정렬 완료 \n");
 		// 중복 제거 유틸 적용
 		List<GoodsDTO> popularItems = GoodsImgUtil.removeDuplicateByImgname(allPopularGoods, 10);
 		
@@ -51,7 +51,7 @@ public class GoodsService {
 			List<Goods> partial = goodsRepo.findTop20ByProductNameContainingIgnoreCase(sh.getKeyword());
 			collected.addAll(partial);
 		}
-		System.out.println("[조회] : [GoodsService] 추천 상품 조회 완료");
+		System.out.println("[조회] : [GoodsService] 추천 상품 조회 완료 \n");
 
 		// 3. 중복 제거 유틸 적용 + 최대 10개까지 자르기
 		List<GoodsDTO> recommendedItems = GoodsImgUtil.removeDuplicateByImgname(collected, 10);

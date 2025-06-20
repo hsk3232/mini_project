@@ -34,7 +34,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 		
 		String srcToken = request.getHeader(HttpHeaders.AUTHORIZATION); // 요청 헤더에서 Authorization을 얻어온다.
 		if (srcToken == null || !srcToken.startsWith("Bearer ")) { // 없거나 “Bearer ”로 시작하지 않는다면
-			System.out.println("[진입] : [JWTAuthorizationFilter] 토큰 없음");
+			System.out.println("[진입] : [JWTAuthorizationFilter] 토큰 없음 \n");
 			filterChain.doFilter(request, response); // 필터를 그냥 통과
 			return;
 		}
@@ -81,12 +81,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 		        AuthorityUtils.createAuthorityList("ROLE_" + findmember.getRole().toString()));
 		    Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 		    SecurityContextHolder.getContext().setAuthentication(auth);
-		    System.out.println("[성공] : [JWTAuthorizationFilter] SecurityContext 등록 완료"+ "\n");
+		    System.out.println("[성공] : [JWTAuthorizationFilter] SecurityContext 등록 완료 \n");
 		    filterChain.doFilter(request, response);
-		    System.out.println("[성공] : [JWTAuthorizationFilter] 토큰 확인 완료\n");
+		    System.out.println("[성공] : [JWTAuthorizationFilter] 토큰 확인 완료 \n");
 		} catch (Exception e) {
 		    e.printStackTrace();
-		    System.out.println("[오류] : [JWTAuthorizationFilter] 예외 발생!"+"\n");
+		    System.out.println("[오류] : [JWTAuthorizationFilter] 예외 발생! \n");
 		}
 	}
 }

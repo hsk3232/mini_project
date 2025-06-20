@@ -34,10 +34,11 @@ public class GoodsController {
 	}
 	
 	@GetMapping("/recommend")
-	public ResponseEntity<?> getRecommendGoods(@AuthenticationPrincipal Principal principal) {
+	public ResponseEntity<?> getRecommendGoods(Principal principal) {
 		// SecurityContext에 주입되는 principal(첫 번째 인자) => User(Spring Security의 User) 타입
 		// 토큰 인증을 받아야 함으로 이렇게 써야함. 대신 User user 쓸 때는 id와 인가 정보 외에는 없음.
 		System.out.println("[진입] : [GoodsController] 추천 상품 진입 ");
+		System.out.println(principal.getName());
 		String username = principal.getName();
 	    return ResponseEntity.ok(goodsService.getRecommendGoods(username));
 	}

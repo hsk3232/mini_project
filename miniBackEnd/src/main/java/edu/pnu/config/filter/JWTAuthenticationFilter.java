@@ -63,7 +63,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		catch (Exception e) {
 			// “자격 증명에 실패하였습니다.” 로그 출력
-			System.out.println("[실패] : [JWTAuthenticationFilter] 사용자 인증 실패" + "\n");
+			System.out.println("[실패] : [JWTAuthenticationFilter] 사용자 인증 실패 \n");
 			log.info(e.getMessage());
 			// 자격 증명에 실패하면 응답코드 리턴
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());

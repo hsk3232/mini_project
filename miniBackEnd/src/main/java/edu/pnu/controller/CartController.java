@@ -3,7 +3,6 @@ package edu.pnu.controller;
 import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.pnu.domain.Cart;
-import edu.pnu.domain.Member;
 import edu.pnu.dto.cart.AddToCartRequestDTO;
 import edu.pnu.dto.cart.CartDTO;
 import edu.pnu.persistence.CartRepository;
 import edu.pnu.persistence.MemberRepository;
 import edu.pnu.service.member.CartService;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
@@ -32,33 +31,45 @@ public class CartController {
     @PostMapping("/cart/add")
     public ResponseEntity<?> addToCart(@RequestBody AddToCartRequestDTO dto, Principal principal) {
         System.out.println("[진입] : [CartController] 장바구니 담기 진입");
+        log.info("[진입] : [CartController] 카트 리스트 진입 ✅");
         String username = principal.getName();
         System.out.println(dto.toString());
     	cartService.addToCart(username, dto.getItems());
-        System.out.println("[성공] : [CartController] 장바구니 담기 완료");
+        System.out.println("[성공] : [CartController] 장바구니 담기 완료 \n");
         return ResponseEntity.ok().build();
     }
+    
     @GetMapping("/cart/list")
-    public ResponseEntity<CartDTO> getCart(@AuthenticationPrincipal Member member) {
-    	
-    	Cart cart = cartRepo.findByMember_Username(member.getUsername())
+    public ResponseEntity<?> getCart(Principal principal) {
+    	System.out.println("[진입] : [CartController] 카트 리스트 진입");
+    	String member = principal.getName();
+    	Cart cart = cartRepo.findByMember_Username(member)
     		    .orElseThrow(() -> new IllegalArgumentException("장바구니가 없습니다."));
-        CartDTO dto = cartService.convertToCartDTO(cart);
+    	
+        CartDTO dto = cartService.getCart(cart);
+        System.out.println("[성공] : [CartController] 카트 리스트 로딩 완료 \n");
         return ResponseEntity.ok(dto);
     }
     
     // 선택 삭제
     @DeleteMapping("/cart/remove/{optionid}")
 	public ResponseEntity<?> deleteCartItem(@PathVariable String optionid, Principal principal) {
-	    String username = principal.getName();
+    	
+    	System.out.println("[진입] : [CartController] 선택 삭제 진입");
+	    
+    	String username = principal.getName();
 	    cartService.deleteItemFromCart(username, optionid);
+	    
+	    System.out.println("[성공] : [CartController] 선택 삭제 성공 \n");
 	    return ResponseEntity.ok().build();
 	}
     
     @DeleteMapping("/cart/remove")
-    public ResponseEntity<?> deleteAllCartItems(Principal principal) {
+    public ResponseEntity<?> deleteClearCart(Principal principal) {
+    	System.out.println("[진입] : [CartController] 전체 삭제 진입");
         String username = principal.getName();
-        cartService.clearCart(username);
+        cartService.deleteClearCart(username);
+        System.out.println("[성공] : [CartController] 전체 삭제 성공 \n");
         return ResponseEntity.ok().build();
     }
 

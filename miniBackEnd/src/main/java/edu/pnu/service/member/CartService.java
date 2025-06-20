@@ -53,7 +53,7 @@ public class CartService {
 	}
 
 	// 2. 장바구니 front 전달 메서드
-	public CartDTO convertToCartDTO(Cart cart) {
+	public CartDTO getCart(Cart cart) {
 		List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
 				.map((CartItem item) -> CartItemDTO.builder().optionid(item.getGoodsOption().getOptionid())
 						.imgname(item.getGoodsOption().getImgname()).price(item.getGoodsOption().getGoods().getPrice())
@@ -62,6 +62,7 @@ public class CartService {
 
 		return CartDTO.builder().username(cart.getMember().getUsername()).items(itemDTOs).build();
 	}
+	
 	
 	 @Transactional
 	    public void deleteItemFromCart(String username, String optionid) {
@@ -76,9 +77,8 @@ public class CartService {
 	    }
 	 
 	 @Transactional
-	 public void clearCart(String username) {
-	    
-
+	 public void deleteClearCart(String username) {
+	
 	     Cart cart = cartRepo.findByMember_Username(username)
 	         .orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
 
