@@ -2,15 +2,14 @@ package edu.pnu.service.member;
 
 import java.util.List;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import edu.pnu.domain.Member;
 import edu.pnu.domain.OrderList;
 import edu.pnu.domain.QnA;
 import edu.pnu.domain.Review;
 import edu.pnu.domain.WishList;
+import edu.pnu.dto.member.MemberResponseDTO;
 import edu.pnu.dto.member.MemberUpdateDTO;
 import edu.pnu.persistence.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,16 @@ public class MemberService{
         return memberRepo.findById(username)
             .orElseThrow(() -> new IllegalArgumentException("[오류] : [MemberService] 회원 정보가 없다. \n"));
     }
-
+    
+    public MemberResponseDTO toResponseDTO(Member member) {
+        return MemberResponseDTO.builder()
+                .username(member.getUsername())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .role(member.getRole().name())
+                .build();
+    }
+    
     // 2. 내 정보 변경
     public void updateMemberInfo(String username, MemberUpdateDTO dto) {
         Member member = findMemberInfo(username);

@@ -55,12 +55,19 @@ public class CartService {
 	// 2. 장바구니 front 전달 메서드
 	public CartDTO getCart(Cart cart) {
 		List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
-				.map((CartItem item) -> CartItemDTO.builder().optionid(item.getGoodsOption().getOptionid())
-						.imgname(item.getGoodsOption().getImgname()).price(item.getGoodsOption().getGoods().getPrice())
-						.quantity(item.getQuantity()).size(item.getGoodsOption().getSize()).build())
+				.map((CartItem item) -> CartItemDTO.builder()
+						.optionid(item.getGoodsOption().getOptionid())
+						.imgname(item.getGoodsOption().getImgname())
+						.price(item.getGoodsOption().getGoods().getPrice())
+						.quantity(item.getQuantity())
+						.size(item.getGoodsOption().getSize())
+						.build())
 				.collect(Collectors.toList());
 
-		return CartDTO.builder().username(cart.getMember().getUsername()).items(itemDTOs).build();
+		return CartDTO.builder()
+				.username(cart.getMember().getUsername())
+				.items(itemDTOs)
+				.build();
 	}
 	
 	

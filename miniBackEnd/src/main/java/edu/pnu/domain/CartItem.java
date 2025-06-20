@@ -1,5 +1,6 @@
 package edu.pnu.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,10 +27,11 @@ import lombok.ToString;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="cartitemid")
     private Long cartItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cartId")
+    @JoinColumn(name = "cartid")
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)

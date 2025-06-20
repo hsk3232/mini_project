@@ -30,8 +30,10 @@ public class ImgAdress {
 	    private Long seq;  // 여러 이미지 저장을 위해 auto-increment PK
 
 	    private String imgname; // FK
+	    
 	    @Column(name="imgurl")
 	    private String imgUrl;
+	    
 	    private boolean ismain;
 
 	    // N:1 (imgname으로 goods와 연결)

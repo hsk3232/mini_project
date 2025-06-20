@@ -31,7 +31,7 @@ public class CartController {
     @PostMapping("/cart/add")
     public ResponseEntity<?> addToCart(@RequestBody AddToCartRequestDTO dto, Principal principal) {
         System.out.println("[진입] : [CartController] 장바구니 담기 진입");
-        log.info("[진입] : [CartController] 카트 리스트 진입 ✅");
+        log.info("[진입] : [CartController] 카트 리스트 진입");
         String username = principal.getName();
         System.out.println(dto.toString());
     	cartService.addToCart(username, dto.getItems());

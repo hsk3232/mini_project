@@ -33,6 +33,10 @@ public class GoodsController {
 		}
 	}
 	
+	// Mapping 주소로 front가 헤더에 토큰을 담아서 보내면 -> Spring Security의 JWTAuthorizationFilter가 이 토큰을 가로챔
+	// JWTAuthorizationFilter가 토큰을 디코딩하고 -> username을 꺼내고-> User 객체를 만들고 -> 그걸 SecurityContextHolder에 등록해줌.
+	// 그리고 그 결과로 Principal을 나에게 넘겨줌. 
+	
 	@GetMapping("/recommend")
 	public ResponseEntity<?> getRecommendGoods(Principal principal) {
 		// SecurityContext에 주입되는 principal(첫 번째 인자) => User(Spring Security의 User) 타입
@@ -42,6 +46,8 @@ public class GoodsController {
 		String username = principal.getName();
 	    return ResponseEntity.ok(goodsService.getRecommendGoods(username));
 	}
+	
+
 	
 
 

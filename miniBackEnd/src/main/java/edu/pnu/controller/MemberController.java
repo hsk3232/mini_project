@@ -2,6 +2,7 @@ package edu.pnu.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,7 +15,7 @@ import edu.pnu.domain.OrderList;
 import edu.pnu.domain.QnA;
 import edu.pnu.domain.Review;
 import edu.pnu.domain.WishList;
-import edu.pnu.dto.goods.AdGoodsDTO;
+import edu.pnu.dto.member.MemberResponseDTO;
 import edu.pnu.dto.member.MemberUpdateDTO;
 import edu.pnu.service.everyone.GoodsService;
 import edu.pnu.service.member.MemberService;
@@ -30,11 +31,11 @@ public class MemberController {
 	private final GoodsService goodsService;
 
     // 1-1. 내 정보 조회
-    @GetMapping("/info")
-    public Member getMemberInfo(@AuthenticationPrincipal Member member) {
-        return member; // JWT 인증 기반이면 이렇게도 가능!
-        // 또는 memberService.findMemberInfo(member.getUsername());
-    }
+	@GetMapping("/info")
+	public ResponseEntity<MemberResponseDTO> getMemberInfo(@AuthenticationPrincipal Member member) {
+	    MemberResponseDTO dto = memberService.toResponseDTO(member);
+	    return ResponseEntity.ok(dto);
+	}
 
     // 1-2. 내 정보 수정 (PATCH/PUT 권장)
     @PutMapping("/info")
