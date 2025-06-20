@@ -5,17 +5,16 @@ import java.security.Principal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.pnu.domain.Cart;
-import edu.pnu.dto.cart.AddToCartRequestDTO;
+import edu.pnu.dto.cart.CartAddRequestDTO;
 import edu.pnu.dto.cart.CartDTO;
-import edu.pnu.persistence.CartRepository;
-import edu.pnu.persistence.MemberRepository;
+import edu.pnu.dto.cart.CartUpdateRequestDTO;
 import edu.pnu.service.member.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +24,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/member")
 public class CartController {
     private final CartService cartService;
-    private final MemberRepository memberRepo;
-    private final CartRepository cartRepo;
 
     @PostMapping("/cart/add")
-    public ResponseEntity<?> addToCart(@RequestBody AddToCartRequestDTO dto, Principal principal) {
+    public ResponseEntity<?> addToCart(@RequestBody CartAddRequestDTO dto, Principal principal) {
         System.out.println("[진입] : [CartController] 장바구니 담기 진입");
-        log.info("[진입] : [CartController] 카트 리스트 진입");
+        
         String username = principal.getName();
-        System.out.println(dto.toString());
-    	cartService.addToCart(dto.getItems(), username);
-        System.out.println("[성공] : [CartController] 장바구니 담기 완료 \n");
+        System.out.println("[실행] : 담긴 상품 " + dto.getItems().toString());
+    	
+        cartService.addToCart(dto.getItems(), username);
+        
+    	System.out.println("[성공] : [CartController] 장바구니 담기 완료 \n");
         return ResponseEntity.ok().build();
     }
     
@@ -44,13 +43,32 @@ public class CartController {
     @GetMapping("/cart/list")
     public ResponseEntity<?> getCart(Principal principal) {
     	System.out.println("[진입] : [CartController] 카트 리스트 진입");
-    	String member = principal.getName();
-    	Cart cart = cartRepo.findByMember_Username(member)
-    		    .orElseThrow(() -> new IllegalArgumentException("장바구니가 없습니다."));
     	
-        CartDTO dto = cartService.getCart(cart);
+    	String username = principal.getName();
+        CartDTO dto = cartService.getCart(username);
+        
         System.out.println("[성공] : [CartController] 카트 리스트 로딩 완료 \n");
         return ResponseEntity.ok(dto);
+    }
+    
+    @PatchMapping("/cart/update")
+    public ResponseEntity<?> updateCart(Principal principal,
+        @RequestBody CartUpdateRequestDTO request
+    ) {
+        System.out.println("[진입] : [CartController] 수량 변경 요청");
+        String username = principal.getName();
+        if (request.getOptionid() == null || request.getQuantityChange() == null) {
+            return ResponseEntity.badRequest().body("optionid와 quantityChange는 필수입니다.");
+        }
+
+        CartDTO updatedCart = cartService.updateCart(
+        		username,
+            request.getOptionid(),
+            request.getQuantityChange()
+        );
+
+        System.out.println("[성공] : [CartController] 수량 변경 완료");
+        return ResponseEntity.ok(updatedCart);
     }
     
     // 선택 삭제

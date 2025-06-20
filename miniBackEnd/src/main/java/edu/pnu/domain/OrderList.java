@@ -35,7 +35,6 @@ public class OrderList {
     private LocalDateTime orderdate;
     private String orderstatus;
     private int total;
-    
     private String payment;
 
     @OneToMany(mappedBy = "orderList", cascade = CascadeType.ALL, orphanRemoval = true)

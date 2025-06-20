@@ -1,7 +1,6 @@
 package edu.pnu.service.member;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class CartService {
 	private final CartItemRepository cartItemRepo;
 
 	// 1. 장바구니 DB 저장 메서드
-	@Transactional
+		@Transactional
 	public void addToCart(List<CartItemDTO> items, String username) {
 
 		Member member = memberRepo.findByUsername(username)
@@ -53,33 +52,34 @@ public class CartService {
 	}
 
 	// 2. 장바구니 front 전달 메서드
-	public CartDTO getCart(Cart cart) {
-		List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
-				.map((CartItem item) -> CartItemDTO.builder()
-					.optionid(item.getGoodsOption().getOptionid())
-		            .imgname(item.getGoodsOption().getImgname())
-		            .productName(item.getGoodsOption().getGoods().getProductName())
-		            .price(item.getGoodsOption().getGoods().getPrice()) // ✅ 여기!
-		            .quantity(item.getQuantity())
-		            .size(item.getGoodsOption().getSize())
-		            .imgUrl(item.getGoodsOption().getGoods().getImgAdressList().stream()
-		                    .filter(img -> img.isIsmain()) // ismain이 true인 것만
-		                    .filter(img -> img.getImgname()
-		                    					.equals(item.getGoodsOption()
-		                    							.getImgname())) // imgname이 같은 것만
-		                    .findFirst()
-		                    .map(img -> img.getImgUrl()) // imgUrl만 추출
-		                    .orElse(null)) // 없으면 null
-		            .build())
-				.collect(Collectors.toList());
-
-		return CartDTO.builder()
-				.username(cart.getMember().getUsername())
-				.items(itemDTOs)
-				.build();
+	public CartDTO getCart(String username) {
+		  Cart cart = cartRepo.findByMember_Username(username)
+				  .orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
+		    return CartDTO.fromEntity(cart); // 또는 그대로 변환 로직 유지
 	}
+
+	//3. 장바구니 업데이트 메서드
+	public CartDTO updateCart(String username, String optionId, int quantityChange) {
+	    Cart cart = cartRepo.findByMember_Username(username)
+	        .orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
+
+	    CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionId, cart)
+	        .orElseThrow(() -> new IllegalArgumentException("해당 상품 없음"));
+
+	    int newQty = item.getQuantity() + quantityChange;
+
+	    if (newQty <= 0) {
+	        cartItemRepo.delete(item);
+	    } else {
+	        item.setQuantity(newQty);
+	    }
+
+	    return CartDTO.fromEntity(cart);
+	}
+
 	
 	
+	// 4. 장바구니에서 특정 상품 제거
 	 @Transactional
 	    public void deleteItemFromCart(String optionid, String username) {
 	       
@@ -92,6 +92,7 @@ public class CartService {
 	        cartItemRepo.delete(item);
 	    }
 	 
+	// 4. 장바구니 전체 비우기
 	 @Transactional
 	 public void deleteClearCart(String username) {
 	

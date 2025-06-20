@@ -22,14 +22,12 @@ public class CartDTO {
     private List<CartItemDTO> items; // 장바구니에 담긴 상품 옵션 리스트
 
     // Entity → DTO 변환 메서드
-    public static CartDTO fromEntity(String username) {
-        return CartDTO.builder()
-                .username(getMember().getUsername())
-                .items(
-                    cart.getCartItems().stream()
-                        .map(CartItemDTO::fromEntity)
-                        .collect(Collectors.toList())
-                )
-                .build();
+    public static CartDTO fromEntity(Cart cart) {
+    	return CartDTO.builder()
+    		.username(cart.getMember().getUsername())
+    		.items(cart.getCartItems().stream()
+    			.map(CartItemDTO::fromEntity)
+    			.collect(Collectors.toList()))
+    		.build();
     }
 }
