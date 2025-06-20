@@ -51,5 +51,7 @@ public class GoodsDTO {
                 .imglist(imglist)
                 .build();
     }
+    
+   
 
 }

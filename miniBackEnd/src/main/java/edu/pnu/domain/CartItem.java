@@ -39,7 +39,8 @@ public class CartItem {
     private GoodsOption goodsOption;
     
     private int quantity;
-
+    
+    private boolean remain = true;
     
     public CartItem(GoodsOption option, Cart cart, int quantity) {
         this.goodsOption = option;

@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.pnu.domain.CartUpdateRequestDTO;
 import edu.pnu.dto.cart.CartAddRequestDTO;
 import edu.pnu.dto.cart.CartDTO;
-import edu.pnu.dto.cart.CartUpdateRequestDTO;
+import edu.pnu.dto.cart.CartRemainListDTO;
 import edu.pnu.service.member.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,8 @@ public class CartController {
         return ResponseEntity.ok(dto);
     }
     
+    
+    
     @PatchMapping("/cart/update")
     public ResponseEntity<?> updateCart(Principal principal,
         @RequestBody CartUpdateRequestDTO request
@@ -71,6 +74,21 @@ public class CartController {
         return ResponseEntity.ok(updatedCart);
     }
     
+    
+ // 🛒 주문한 상품을 장바구니에서 숨김 처리 (remain = false)
+    @PatchMapping("/cart/remain")
+    public ResponseEntity<?> removeCartItemsLogically(@RequestBody CartRemainListDTO items, Principal principal) {
+        String username = principal.getName();
+
+        System.out.println("[진입] : [CartController] remain 상태 변경 요청 - 사용자: " + username);
+
+        cartService.markItemsAsRemoved(items, username);
+
+        System.out.println("[성공] : [CartController] remain 상태 false 처리 완료\n");
+        return ResponseEntity.ok().build();
+    }
+    
+    
     // 선택 삭제
     @DeleteMapping("/cart/remove/{optionid}")
 	public ResponseEntity<?> deleteCartItem(@PathVariable String optionid, Principal principal) {
@@ -83,7 +101,7 @@ public class CartController {
 	    System.out.println("[성공] : [CartController] 선택 삭제 성공 \n");
 	    return ResponseEntity.ok().build();
 	}
-    
+       
     
     
     @DeleteMapping("/cart/remove")

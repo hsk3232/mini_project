@@ -1,5 +1,8 @@
 package edu.pnu.dto.cart;
 
+import java.util.List;
+
+import edu.pnu.domain.Cart;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,12 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString @AllArgsConstructor @NoArgsConstructor
+@ToString
+@Getter
+@Setter
 @Builder
-public class CartUpdateRequestDTO {
-	private String optionid;
-    private Integer quantityChange;
+@NoArgsConstructor
+@AllArgsConstructor
+public class CartRemainDTO {
+	String optionid;
+	boolean remain; 
+	
 }
-
-
-    

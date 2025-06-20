@@ -1,5 +1,6 @@
 package edu.pnu.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import edu.pnu.domain.OrderList;
 import edu.pnu.domain.QnA;
 import edu.pnu.domain.Review;
 import edu.pnu.domain.WishList;
+import edu.pnu.dto.Orders.OrderAddressDTO;
 import edu.pnu.dto.member.MemberResponseDTO;
 import edu.pnu.dto.member.MemberUpdateDTO;
 import edu.pnu.service.everyone.GoodsService;
@@ -44,9 +46,16 @@ public class MemberController {
         memberService.updateMemberInfo(member.getUsername(), dto);
         return "정보 수정 완료";
     }
-
-	
-	
+    
+    // 2. 배송지 설정
+    @GetMapping("/address")
+    public ResponseEntity<List<OrderAddressDTO>> getMyAddresses(Principal principal) {
+    	Member member = memberService.findMemberInfo(principal.getName());
+        List<OrderAddressDTO> list = member.getAddresses().stream()
+            .map(OrderAddressDTO::fromEntity)
+            .toList();
+        return ResponseEntity.ok(list);
+    }
     
     
     // 3. 내 구매내역

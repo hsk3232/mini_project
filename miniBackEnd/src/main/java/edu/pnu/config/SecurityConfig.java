@@ -38,7 +38,9 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// CSRF 보호 비활성화
 		http.csrf(csrf -> csrf.disable());
+		
 		http.authorizeHttpRequests(auth -> auth
+				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/api/public/**").permitAll()
 				.requestMatchers("/api/member/**").authenticated()
 				.requestMatchers("/api/admin/**").hasRole("ADMIN")

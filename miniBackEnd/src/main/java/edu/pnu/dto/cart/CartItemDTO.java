@@ -21,6 +21,7 @@ public class CartItemDTO {
     private String size;
     private String imgUrl;
     private boolean ismain;
+
     
 
     public static CartItemDTO fromEntity(CartItem item) {
@@ -39,6 +40,7 @@ public class CartItemDTO {
                     .findFirst()
                     .map(img -> img.getImgUrl()) // imgUrl만 추출
                     .orElse(null)) // 없으면 null
+            
             .build();
     }
 }

@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.pnu.dto.goods.AdGoodsDTO;
-import edu.pnu.dto.goods.GoodsDTO;
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,13 +33,17 @@ public class OrderList {
     @JoinColumn(name = "username")
     private Member member;
 
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime orderdate;
     private String orderstatus;
     private int total;
     private String payment;
 
     @OneToMany(mappedBy = "orderList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default  // ✅ @Builder와 함께 초기화가 되도록!
     private List<OrderItem> items = new ArrayList<>();
+
 
     // 리뷰도 필요하면 그대로 둬도 됨
     @OneToMany(mappedBy = "orderList", cascade = CascadeType.ALL, orphanRemoval = true)
