@@ -21,7 +21,7 @@
 | SearchController       | `/api/public/search`             | GET      | main, mid, detail, gender, color, print, keyword, price 등 | 상품 검색 결과 반환     |
 | AdminController        | `/api/admin/goods/approve`       | POST     | 상품정보, 승인정보                        | 상품 승인 처리                    |
 |                        | `/api/admin/member/list`         | GET      | 없음                                     | 회원 전체 리스트 반환             |
-| OrderController        | `/api/order/create`              | POST     | 주문 정보(OrderDTO 등)                    | 주문 생성, 주문결과 반환          |
+| OrderController        | `/api/order/orders`              | POST     | 주문 정보(OrderDTO 등)                    | 주문 생성, 주문결과 반환          |
 |                        | `/api/order/list`                | GET      | 회원정보 등                               | 주문 내역 리스트 반환             |
 | GoodsDetailController  | `/api/goods/detail/{imgname}`    | GET      | imgname (Path)                            | 상품 상세정보 반환                |
 | MemberController       | `/api/member/login`              | POST/GET | username, password                        | 로그인, 토큰/정보 반환            |

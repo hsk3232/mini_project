@@ -23,7 +23,7 @@ public class OrderController {
 	    private final OrderService orderService;
 	    private final MemberRepository memberRepo;
 
-	    @PostMapping("/create")
+	    @PostMapping("/orders")
 	    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO requestDTO, Principal principal) {
 	        // principal에서 username 꺼내서 member 조회 (생략)
 	        Member member = memberRepo.findByUsername(principal.getName()).orElse(null);
