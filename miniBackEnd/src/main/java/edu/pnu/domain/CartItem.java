@@ -35,8 +35,9 @@ public class CartItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "optionid")
     private GoodsOption goodsOption;
-
+    
     private int quantity;
+
     
     public CartItem(Cart cart, GoodsOption option, int quantity) {
         this.cart = cart;

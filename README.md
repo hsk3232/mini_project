@@ -8,7 +8,8 @@
 |------------------------|----------------------------------|----------|------------------------------------------|-----------------------------------|
 | CartController         | `/api/cart/add`                  | POST     | optionId, quantity, member               | 장바구니에 상품 추가 (CartDTO 등) |
 |                        | `/api/cart/list`                 | GET      | member                                   | 장바구니 전체 목록 반환           |
-|                        | `/api/cart/remove`               | POST     | optionId, member                         | 장바구니 상품 삭제                |
+|                        | `/api/cart/remove/{optionid}`    | POST     | optionId, member                         | 장바구니 상품 선택 삭제               |
+|                        | `/api/cart/remove`               | POST     | member                                   | 장바구니 상품 전체 삭제                |
 | CategoryController     | `/api/category/categoryTree`     | GET      | 없음                                     | 카테고리 트리 반환                |
 |                        | `/api/category/category`         | GET      | 없음                                     | 전체 카테고리 리스트              |
 | GoodsController        | `/api/goods/popular`             | GET      | 없음                                     | 인기 상품 목록 반환               |
@@ -26,6 +27,7 @@
 | MemberController       | `/api/member/login`              | POST/GET | username, password                        | 로그인, 토큰/정보 반환            |
 |                        | `/api/member/memberinfo`         | GET      | 없음                                     | 회원 정보 반환                    |
 |                        | `/api/member/logout`             | POST/GET | 없음                                     | 로그아웃 처리                     |
+
 
 ---
 

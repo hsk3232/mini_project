@@ -74,9 +74,19 @@ public class Member {
         if (dto.getPhone() != null) setPhone(dto.getPhone());
     }
     
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "member")
+    private List<WishList> wishLists = new ArrayList<>();
     
 	//user1명이 여러 상품에 리뷰를 남길 수 있음.
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Review> review = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "member")
+	private List<QnA> qnas = new ArrayList<>();
     
+	@OneToMany(mappedBy = "member")
+	private List<OrderList> orderLists;
 }

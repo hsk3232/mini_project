@@ -8,5 +8,7 @@ import edu.pnu.domain.Cart;
 import edu.pnu.domain.Member;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
-	 Optional<Cart> findByMember(Member member);
+
+	 Optional<Cart> findByMember_Username(String username);
+
 }
