@@ -1,6 +1,7 @@
 package edu.pnu.service.member;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -56,8 +57,16 @@ public class CartService {
 	// 2. 장바구니 front 전달 메서드
 	public CartDTO getCart(String username) {
 		Cart cart = cartRepo.findByMember_Username(username).orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
-		return CartDTO.fromEntity(cart); // 또는 그대로 변환 로직 유지
-	}
+		// 📌 변경됨! remain == true인 항목만 필터링
+						List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
+					    .filter(CartItem::isRemain)
+					    .map(CartItemDTO::fromEntity)
+					    .collect(Collectors.toList());
+
+				CartDTO dto = new CartDTO();         // 📌 변경됨!
+				dto.setItems(itemDTOs);              // 📌 변경됨!
+				return dto;                          // 📌 변경됨!
+			}
 
 	// 3. 장바구니 업데이트 메서드
 	@Transactional
@@ -75,22 +84,30 @@ public class CartService {
 			item.setQuantity(newQty);
 		}
 
-		return CartDTO.fromEntity(cart);
-	}
+		// 📌 변경됨! 수량 변경 후 remain == true인 항목만 반환
+		List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
+			    .filter(CartItem::isRemain)
+			    .map(CartItemDTO::fromEntity)
+			    .collect(Collectors.toList());
 
+				CartDTO dto = new CartDTO();         // 📌 변경됨!
+				dto.setItems(itemDTOs);              // 📌 변경됨!
+				return dto;                          // 📌 변경됨!
+			}
+
+	// 4. 장바구니에서 주문한 상품 제거
 	@Transactional
-	public void markItemsAsRemoved(CartRemainListDTO items, String username) {
+	public void updateRemainStatus(CartRemainListDTO items, String username) {
+
 	    Cart cart = cartRepo.findByMember_Username(username)
 	        .orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
 
 	    for (CartRemainDTO dto : items.getItems()) {
 	        CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(dto.getOptionid(), cart)
-	            .orElseThrow(() -> new IllegalArgumentException("장바구니 항목 없음: " + dto.getOptionid()));
+	            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 장바구니에 없음"));
 
-	        if (item.isRemain()) {
-	            item.setRemain(false);
-	            cartItemRepo.save(item);
-	        }
+	        item.setRemain(!item.isRemain());// 🔥 remain 값만 변경
+	        cartItemRepo.save(item); // 변경 사항 반영
 	    }
 	}
 

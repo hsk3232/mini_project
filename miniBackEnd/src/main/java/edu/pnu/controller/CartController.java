@@ -82,7 +82,7 @@ public class CartController {
 
         System.out.println("[진입] : [CartController] remain 상태 변경 요청 - 사용자: " + username);
 
-        cartService.markItemsAsRemoved(items, username);
+        cartService.updateRemainStatus(items, username);
 
         System.out.println("[성공] : [CartController] remain 상태 false 처리 완료\n");
         return ResponseEntity.ok().build();
