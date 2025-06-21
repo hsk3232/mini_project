@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 	
 	private final MemberService memberService;
-	private final GoodsService goodsService;
+
 
     // 1-1. 내 정보 조회
 	@GetMapping("/info")
@@ -39,13 +39,16 @@ public class MemberController {
 	    return ResponseEntity.ok(dto);
 	}
 
+	
     // 1-2. 내 정보 수정 (PATCH/PUT 권장)
     @PutMapping("/info")
-    public String updateMemberInfo(@AuthenticationPrincipal Member member, 
-                                   @RequestBody MemberUpdateDTO dto) {
-        memberService.updateMemberInfo(member.getUsername(), dto);
+    public String updateMemberInfo(Principal principal, @RequestBody MemberUpdateDTO dto) {
+    	String username = principal.getName();  	
+        memberService.updateMemberInfo(username, dto);
+        
         return "정보 수정 완료";
     }
+ 
     
     // 2. 배송지 설정
     @GetMapping("/address")
@@ -58,27 +61,36 @@ public class MemberController {
     }
     
     
+    
     // 3. 내 구매내역
     @GetMapping("/orderlist")
-    public List<OrderList> getMyOrders(@AuthenticationPrincipal Member member) {
+    public List<OrderList> getMyOrders(Principal principal) {
+    	Member member = memberService.findMemberInfo(principal.getName());
         return memberService.getMyOrders(member.getUsername());
     }
-//
+
+    
     // 4. 내가 쓴 리뷰
     @GetMapping("/reviews")
-    public List<Review> getMyReviews(@AuthenticationPrincipal Member member) {
+    public List<Review> getMyReviews(Principal principal) {
+    	Member member = memberService.findMemberInfo(principal.getName());
+ 
         return memberService.getMyReviews(member.getUsername());
     }
 
+    
     // 5. 내 문의글
     @GetMapping("/qna")
-    public List<QnA> getMyQnA(@AuthenticationPrincipal Member member) {
+    public List<QnA> getMyQnA(Principal principal) {
+    	Member member = memberService.findMemberInfo(principal.getName());
         return memberService.getMyQnA(member.getUsername());
     }
+  
     
- // 7. WishList
+    // 7. WishList
     @GetMapping("/wishlist")
-    public List<WishList> getMyWishList(@AuthenticationPrincipal Member member) {
+    public List<WishList> getMyWishList(Principal principal) {
+    	Member member = memberService.findMemberInfo(principal.getName());
         return memberService.getMyWishList(member.getUsername());
     }
 }

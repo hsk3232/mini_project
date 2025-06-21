@@ -30,6 +30,7 @@ public class MemberService{
             .orElseThrow(() -> new IllegalArgumentException("[오류] : [MemberService] 회원 정보가 없다. \n"));
     }
     
+    
     public MemberResponseDTO toResponseDTO(Member member) {
         return MemberResponseDTO.builder()
                 .username(member.getUsername())
@@ -38,6 +39,7 @@ public class MemberService{
                 .role(member.getRole().name())
                 .build();
     }
+    
     
     // 2. 내 정보 변경
     public void updateMemberInfo(String username, MemberUpdateDTO dto) {
@@ -57,19 +59,21 @@ public class MemberService{
     
     
     
-//
-//    // 5. 내가 쓴 리뷰
+
+    // 5. 내가 쓴 리뷰
     public List<Review> getMyReviews(String username) {
         // return reviewRepo.findByMemberUsername(username);
         return null;
     }
+    
 
     // 6. 내 문의글
     public List<QnA> getMyQnA(String username) {
         // return inquiryRepo.findByMemberUsername(username);
         return null;
     }
- // 4. wishList
+    
+    // 4. wishList
    	public List<WishList> getMyWishList(String username) {
    		// return wishListRepo.findByMemberUsername(username);
    	return null;
