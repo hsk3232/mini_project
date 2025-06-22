@@ -36,7 +36,7 @@ public class CartService {
 				.orElseThrow(() -> new IllegalArgumentException("회원 없음: " + username));
 
 		// 회원의 장바구니가 없다면 생성.
-		Cart cart = cartRepo.findByMember_Username(username).orElseGet(() -> cartRepo.save(new Cart(member)));
+		Cart cart = cartRepo.findByMember_Username(username);
 
 		// 장바구니에 담을 상품 옵션을 조회하고 CartList에 저장
 		for (CartItemDTO d : items) {
@@ -56,7 +56,7 @@ public class CartService {
 
 	// 2. 장바구니 front 전달 메서드
 	public CartDTO getCart(String username) {
-		Cart cart = cartRepo.findByMember_Username(username).orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
+		Cart cart = cartRepo.findByMember_Username(username);
 		// 📌 변경됨! remain == true인 항목만 필터링
 						List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
 					    .filter(CartItem::isRemain)
@@ -71,7 +71,7 @@ public class CartService {
 	// 3. 장바구니 업데이트 메서드
 	@Transactional
 	public CartDTO updateCart(String username, String optionId, int quantityChange) {
-		Cart cart = cartRepo.findByMember_Username(username).orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
+		Cart cart = cartRepo.findByMember_Username(username);
 
 		CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionId, cart)
 				.orElseThrow(() -> new IllegalArgumentException("해당 상품 없음"));
@@ -99,8 +99,7 @@ public class CartService {
 	@Transactional
 	public void updateRemainStatus(CartRemainListDTO items, String username) {
 
-	    Cart cart = cartRepo.findByMember_Username(username)
-	        .orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
+	    Cart cart = cartRepo.findByMember_Username(username);
 
 	    for (CartRemainDTO dto : items.getItems()) {
 	        CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(dto.getOptionid(), cart)
@@ -115,7 +114,7 @@ public class CartService {
 	@Transactional
 	public void deleteItemFromCart(String optionid, String username) {
 
-		Cart cart = cartRepo.findByMember_Username(username).orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
+		Cart cart = cartRepo.findByMember_Username(username);
 
 		CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionid, cart)
 				.orElseThrow(() -> new IllegalArgumentException("해당 상품이 장바구니에 없음"));
@@ -127,7 +126,7 @@ public class CartService {
 	@Transactional
 	public void deleteClearCart(String username) {
 
-		Cart cart = cartRepo.findByMember_Username(username).orElseThrow(() -> new IllegalArgumentException("장바구니 없음"));
+		Cart cart = cartRepo.findByMember_Username(username);
 
 		List<CartItem> items = cartItemRepo.findByCart(cart);
 		cartItemRepo.deleteAll(items);

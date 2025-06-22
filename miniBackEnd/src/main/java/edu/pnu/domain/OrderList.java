@@ -36,9 +36,9 @@ public class OrderList {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime orderdate;
-    private String orderstatus;
     private int total;
     private String payment;
+    private String orderstatus;
 
     @OneToMany(mappedBy = "orderList", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default  // ✅ @Builder와 함께 초기화가 되도록!

@@ -19,21 +19,27 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @Table(name= "orderaddress")
 public class OrderAddress {
-
+	
+	// 배송지 주소 저장
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="addressid")
     private Long addressId;
-
-    private String name;
-    private String zip;
-    private String address1;
-    private String address2;
-    private String phone;
-
-
+    
     // 해당 주소가 어떤 회원의 주소인지
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username")
     private Member member;
+
+    private String name; //택배 받는 분 이름
+    private String zip;
+    private String address1;
+    private String address2;
+    private String phone;
+    @Column(name = "ismain")
+    private boolean isMain; // true = 기본 주소
+    @Column(name = "deleteaddr")
+    private boolean deleteAddr; // true = 삭제
+
+
 }

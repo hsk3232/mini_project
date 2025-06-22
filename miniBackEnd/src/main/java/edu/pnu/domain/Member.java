@@ -8,7 +8,6 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import edu.pnu.dto.member.MemberUpdateDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,14 +64,7 @@ public class Member {
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SearchHistory> searchHistory = new ArrayList<>();
-
-    
-    public void updateFromDTO(MemberUpdateDTO dto) {
-        if (dto.getNickname() != null) setNickname(dto.getNickname());
-        if (dto.getEmail() != null) setEmail(dto.getEmail());
-        if (dto.getGender() != null) setGender(dto.getGender());
-        if (dto.getPhone() != null) setPhone(dto.getPhone());
-    }
+ 
     
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts = new ArrayList<>();

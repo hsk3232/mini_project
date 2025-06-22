@@ -9,4 +9,7 @@ import edu.pnu.domain.Member;
 public interface MemberRepository extends JpaRepository<Member, String> {
 	//Optional: null 값이면 실행이 안되는 type
 	Optional<Member> findByUsername(String username);
+	
+	
+	
 }

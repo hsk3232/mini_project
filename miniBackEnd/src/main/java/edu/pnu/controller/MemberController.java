@@ -1,20 +1,12 @@
 package edu.pnu.controller;
 
-<<<<<<< HEAD
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import edu.pnu.persistence.MemberRepository;
-=======
 import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,92 +17,126 @@ import edu.pnu.domain.QnA;
 import edu.pnu.domain.Review;
 import edu.pnu.domain.WishList;
 import edu.pnu.dto.Orders.OrderAddressDTO;
+import edu.pnu.dto.member.MemberInfoDTO;
 import edu.pnu.dto.member.MemberResponseDTO;
-import edu.pnu.dto.member.MemberUpdateDTO;
-import edu.pnu.service.everyone.GoodsService;
 import edu.pnu.service.member.MemberService;
->>>>>>> 263408d4aabcf3c14826579fb6c42b9af592cb65
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-<<<<<<< HEAD
-public class MemberController {
-	@Autowired
-	private final MemberRepository memberRepo;
-	
-	@PostMapping("/sign")
-	public String postSign(Model model) {
-		
-		return"";
-=======
 @RequestMapping("/api/member")
 
 public class MemberController {
-	
+
 	private final MemberService memberService;
+	 
 
-
-    // 1-1. 내 정보 조회
+	// 1-1. 내 정보 조회
 	@GetMapping("/info")
-	public ResponseEntity<MemberResponseDTO> getMemberInfo(@AuthenticationPrincipal Member member) {
-	    MemberResponseDTO dto = memberService.toResponseDTO(member);
-	    return ResponseEntity.ok(dto);
->>>>>>> 263408d4aabcf3c14826579fb6c42b9af592cb65
+	public ResponseEntity<MemberResponseDTO> getMemberInfo(Principal principal) {
+		System.out.println("[진입] : [MemberController] 내 정보 조회 진입");
+
+		MemberResponseDTO dto = memberService.getMemberInfo(principal.getName());
+		System.out.println("[성공] : [MemberController] 내 정보 조회 성공 ");
+		return ResponseEntity.ok(dto);
+
 	}
 
+	// 2-1. 기본 정보 수정
+	@PatchMapping("/infoEdit")
+	public ResponseEntity<MemberResponseDTO> updateMemberInfo(Principal principal, 
+			@RequestBody MemberInfoDTO dto) {
+		System.out.println("[진입] : [MemberController] 기본 정보 수정 진입 ");
+	    String username = principal.getName();
+	    MemberResponseDTO response = memberService.updateMemberInfo(username, dto);
+	    System.out.println("[성공] : [MemberController] 기본 정보 수정 성공 ");
+	    return ResponseEntity.ok(response);
+	}
 	
-    // 1-2. 내 정보 수정 (PATCH/PUT 권장)
-    @PutMapping("/info")
-    public String updateMemberInfo(Principal principal, @RequestBody MemberUpdateDTO dto) {
-    	String username = principal.getName();  	
-        memberService.updateMemberInfo(username, dto);
-        
-        return "정보 수정 완료";
-    }
- 
-    
-    // 2. 배송지 설정
-    @GetMapping("/address")
-    public ResponseEntity<List<OrderAddressDTO>> getMyAddresses(Principal principal) {
-    	Member member = memberService.findMemberInfo(principal.getName());
-        List<OrderAddressDTO> list = member.getAddresses().stream()
-            .map(OrderAddressDTO::fromEntity)
-            .toList();
-        return ResponseEntity.ok(list);
-    }
-    
-    
-    
-    // 3. 내 구매내역
-    @GetMapping("/orderlist")
-    public List<OrderList> getMyOrders(Principal principal) {
-    	Member member = memberService.findMemberInfo(principal.getName());
-        return memberService.getMyOrders(member.getUsername());
-    }
+	// 2-2. 비밀번호 변경
+	@PatchMapping("/password")
+	public ResponseEntity<String> changePassword(Principal principal,
+	                                              @RequestBody String newPassword) {
+	    String username = principal.getName();
+	    memberService.changePassword(username, newPassword);
+	    return ResponseEntity.ok("비밀번호 변경 완료");
+	}
+	
+	
 
-    
-    // 4. 내가 쓴 리뷰
-    @GetMapping("/reviews")
-    public List<Review> getMyReviews(Principal principal) {
-    	Member member = memberService.findMemberInfo(principal.getName());
- 
-        return memberService.getMyReviews(member.getUsername());
-    }
+	// 2-3-1. 배송지 목록 확인
+	@GetMapping("/address")
+	public ResponseEntity <List<OrderAddressDTO>> getMyAddresses(Principal principal) {
+		System.out.println("[진입] : [MemberController] 배송지 내역 확인 진입 ");
+		List<OrderAddressDTO> dto = memberService.getMyAddresses(principal.getName());
+		System.out.println("[성공] : [MemberController] 배송지 내역 확인 성공 ");
+		return ResponseEntity.ok(dto);
+	}
+	
+	// 2-3-2. 배송지 추가
+	@PostMapping("/addressAdd")
+	public OrderAddressDTO addMyAddresses (Principal principal, @RequestBody OrderAddressDTO newAddr){
+		System.out.println("[진입] : [MemberController] 배송지 추가 진입 ");
+		OrderAddressDTO dto = memberService.addMyAddresses(principal.getName(), newAddr);
+		
+		System.out.println("[성공] : [MemberController] 배송지 추가 성공 ");
+		
+		return dto;
+	}
+	
+	
+	// 2-3-3. 배송지 수정
+	@PatchMapping("/addressUpdate")
+	public OrderAddressDTO updateMyAddresses (Principal principal, 
+			@RequestBody OrderAddressDTO newAddr){
+		System.out.println("[진입] : [MemberController] 배송지 수정 진입 ");
+		OrderAddressDTO dto = memberService.updateMyAddresses(principal.getName(), newAddr);
+		System.out.println("[진입] : [MemberController] 배송지 수정 성공 ");
+		return dto;
+	}
+	
+	// 2-3-4 배송지 삭제
+	@PatchMapping("/addressDelete")
+	public List<OrderAddressDTO> deleteMyAddresses(Principal principal, Long addressId) {
+		System.out.println("[진입] : [MemberController] 배송지 삭제 진입 ");
+		return memberService.deleteMyAddresses(principal.getName(), addressId);
+	}
+	
+	
 
-    
-    // 5. 내 문의글
-    @GetMapping("/qna")
-    public List<QnA> getMyQnA(Principal principal) {
-    	Member member = memberService.findMemberInfo(principal.getName());
-        return memberService.getMyQnA(member.getUsername());
-    }
-  
-    
-    // 7. WishList
-    @GetMapping("/wishlist")
-    public List<WishList> getMyWishList(Principal principal) {
-    	Member member = memberService.findMemberInfo(principal.getName());
-        return memberService.getMyWishList(member.getUsername());
-    }
+	// 3-1. 내 구매내역 조회
+	@GetMapping("/orderlist")
+	public List<OrderList> getMyOrders(Principal principal) {
+		List<OrderList> orderList = memberService.getMyOrders(principal.getName());
+		
+		
+		return memberService.getMyOrders(member.getUsername());
+	}
+//	
+	// 3-2. 구매 내역 취소
+
+//	// 4. 내가 쓴 리뷰
+//	@GetMapping("/reviews")
+//	public List<Review> getMyReviews(Principal principal) {
+//		Member member = memberService.getMyReviews(principal.getName());
+//
+//		return memberService.getMyReviews(member.getUsername());
+//	}
+
+//	// 5. 내 문의글
+//	@GetMapping("/qna")
+//	public List<QnA> getMyQnA(Principal principal) {
+//		String username = principal.getName();
+//	    MemberResponseDTO response = memberService.updateMemberInfo(username, dto);
+//		Member member = memberService.getMyQnA(principal.getName());
+//		return memberService.getMyQnA(member.getUsername());
+//	}
+
+//	// 7. WishList
+//	@GetMapping("/wishlist")
+//	public List<WishList> getMyWishList(Principal principal) {
+//		Member member = memberService.getMyWishList(principal.getName());
+//		return memberService.getMyWishList(member.getUsername());
+//	}
+
 }

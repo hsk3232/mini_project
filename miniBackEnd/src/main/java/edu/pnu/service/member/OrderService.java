@@ -9,6 +9,7 @@ import edu.pnu.domain.Member;
 import edu.pnu.domain.OrderAddress;
 import edu.pnu.domain.OrderItem;
 import edu.pnu.domain.OrderList;
+import edu.pnu.dto.Orders.OrderAddressDTO;
 import edu.pnu.dto.Orders.OrderItemDTO;
 import edu.pnu.dto.Orders.OrderListDTO;
 import edu.pnu.dto.Orders.OrderRequestDTO;
@@ -42,12 +43,12 @@ public class OrderService {
     	            .orElseThrow(() -> new IllegalArgumentException("주소 없음"));
     	    } else {
     	        address = OrderAddress.builder()
-    	            .zip(dto.getZip())
-    	            .address1(dto.getAddress1())
-    	            .address2(dto.getAddress2())
-    	            .phone(dto.getPhone())
-    	            .name(dto.getName())              // 🔥 주문자 이름 추가
-    	            .member(member)
+    	        	.member(member)
+    	        	.name(dto.getAddress().getName())              // 🔥 주문자 이름 추가
+    	            .zip(dto.getAddress().getZip())
+    	            .address1(dto.getAddress().getAddress1())
+    	            .address2(dto.getAddress().getAddress2())
+    	            .phone(dto.getAddress().getPhone())
     	            .build();
     	        orderAddressRepo.save(address);
     	    }

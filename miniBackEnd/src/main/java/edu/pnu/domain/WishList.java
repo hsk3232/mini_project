@@ -31,7 +31,7 @@ import lombok.ToString;
 public class WishList {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int wishid;
+	private Long wishid;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "username")
