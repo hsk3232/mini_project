@@ -38,9 +38,12 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// CSRF 보호 비활성화
 		http.csrf(csrf -> csrf.disable());
-		http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/public/**").permitAll()
-				.requestMatchers("/member/**").authenticated().requestMatchers("/seller/**").hasRole("SELLER")
-				.requestMatchers("/manager/**").hasRole("MANAGER")
+		
+		http.authorizeHttpRequests(auth -> auth
+				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+				.requestMatchers("/api/public/**").permitAll()
+				.requestMatchers("/api/member/**").authenticated()
+				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 
 		);
 		// Form을 이용한 로그인을 사용하지 않겠다는 명시적 설정
@@ -60,7 +63,8 @@ public class SecurityConfig {
 
 		http.addFilterBefore(new JWTAuthorizationFilter(memberRepository), AuthorizationFilter.class);
 		http.cors(cors -> cors.configurationSource(corsSource()));
-
+		
+		System.out.println("[성공] : [SecurityConfig] 시큐리티 필터 체인 완성");
 		return http.build();
 	}
 	
@@ -76,6 +80,7 @@ public class SecurityConfig {
 		config.addExposedHeader(HttpHeaders.AUTHORIZATION); // Header에 Authorization을 추가하기 위해서는 필요
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config); // 위 설정을 적용할 Rest 서버의 URL 패턴 설정
+		System.out.println("\n [성공] : [SecurityConfig] front 연결 성공 \n");
 		return source;
 	}
 

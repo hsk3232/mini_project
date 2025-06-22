@@ -1,26 +1,20 @@
 package edu.pnu;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import edu.pnu.domain.Goods;
-import edu.pnu.persistence.GoodsRepository;
+import edu.pnu.persistence.MemberRepository;
 
 @SpringBootTest
 class MiniBackEndApplicationTests {
 	
 	@Autowired
-	private GoodsRepository goodsRepo;
+	private MemberRepository repo;
 	
 	@Test
 	void contextLoads() {
-		List<Goods> list = goodsRepo.findAll();
-		for(Goods g : list) {
-			System.out.println(g);
-		}
+		System.out.println(repo.existsById("user"));
 	}
 	
 
