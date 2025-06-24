@@ -36,8 +36,7 @@ public class OrderAddress {
     private String address1;
     private String address2;
     private String phone;
-    @Column(name = "ismain")
-    private boolean isMain; // true = 기본 주소
+    private boolean main; // true = 기본 주소
     @Column(name = "deleteaddr")
     private boolean deleteAddr; // true = 삭제
 

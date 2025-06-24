@@ -22,19 +22,20 @@ public class OrderAddressDTO {
     private String address1;
     private String address2;
     private String phone;
-    private boolean isMain;
-    private boolean delete;
+    private boolean main;
+    private boolean deleteAddr;
 
     public static OrderAddressDTO fromEntity(OrderAddress addr) {
         return OrderAddressDTO.builder()
-            .addressId(addr.getAddressId())
+        	.addressId(addr.getAddressId()) 
             .username(addr.getMember().getUsername())
             .name(addr.getName())
             .zip(addr.getZip())
             .address1(addr.getAddress1())
             .address2(addr.getAddress2())
             .phone(addr.getPhone())
-            .isMain(addr.isMain())
+            .main(addr.isMain())
+            .deleteAddr(addr.isDeleteAddr())
             .build();
     }
     

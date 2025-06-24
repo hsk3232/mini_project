@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.pnu.domain.CartUpdateRequestDTO;
 import edu.pnu.dto.cart.CartAddRequestDTO;
 import edu.pnu.dto.cart.CartDTO;
 import edu.pnu.dto.cart.CartRemainListDTO;
+import edu.pnu.dto.cart.CartUpdateRequestDTO;
 import edu.pnu.service.member.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +92,7 @@ public class CartController {
     // 선택 삭제
     @DeleteMapping("/cart/remove/{optionid}")
 	public ResponseEntity<?> deleteCartItem(@PathVariable String optionid, Principal principal) {
-    	
+    	System.out.println(optionid);
     	System.out.println("[진입] : [CartController] 선택 삭제 진입");
 	    
     	String username = principal.getName();

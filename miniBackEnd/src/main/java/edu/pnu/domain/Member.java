@@ -24,7 +24,6 @@ import lombok.ToString;
 
 @Getter 
 @Setter
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -65,23 +64,27 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SearchHistory> searchHistory = new ArrayList<>();
  
-    
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts = new ArrayList<>();
     
+    @Builder.Default
     @OneToMany(mappedBy = "member")
     private List<WishList> wishLists = new ArrayList<>();
     
 	//user1명이 여러 상품에 리뷰를 남길 수 있음.
+    @Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Review> review = new ArrayList<>();
+	private List<ReviewList> review = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "member")
-	private List<QnA> qnas = new ArrayList<>();
+	@Builder.Default
+	private List<QnA> qna = new ArrayList<>();
     
 	@OneToMany(mappedBy = "member")
 	private List<OrderList> orderLists;
 	
+	@Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderAddress> addresses = new ArrayList<>();
 }

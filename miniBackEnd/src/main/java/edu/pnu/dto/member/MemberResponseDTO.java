@@ -32,8 +32,6 @@ public class MemberResponseDTO {
  // 비밀번호 등 민감 정보는 포함하지 않음
 	
 	
-	
- 
  public static MemberResponseDTO fromEntity(Member member) {
 	    return MemberResponseDTO.builder()
 	    	.nickname(member.getNickname())
@@ -45,10 +43,12 @@ public class MemberResponseDTO {
 	        .address(
 	        	    member.getAddresses().stream()
 	        	        .filter(OrderAddress::isMain)           // isMain == true
+	        	        .filter(addr->!addr.isDeleteAddr())
 	        	        .findFirst()
 	        	        .map(OrderAddressDTO::fromEntity)       // DTO로 변환
-	        	        .orElse(null)                           // 없으면 null
-	        	)
+	        	        .orElse(null)                          // 없으면 null
+	        	
+	        		)
 	        .email(member.getEmail())
 	        .build();
 	}

@@ -46,11 +46,14 @@ public class OrderList {
 
 
     // 리뷰도 필요하면 그대로 둬도 됨
+    @Builder.Default 
     @OneToMany(mappedBy = "orderList", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> review = new ArrayList<>();
+    private List<ReviewList> review = new ArrayList<>();
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "addressid") // ✅ 이렇게 변경
     private OrderAddress address;
+   
+    
 }

@@ -40,6 +40,7 @@ public class CartItem {
     
     private int quantity;
     
+    @Builder.Default
     private boolean remain = true;
     
     public CartItem(GoodsOption option, Cart cart, int quantity) {

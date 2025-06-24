@@ -1,4 +1,4 @@
-package edu.pnu.domain;
+package edu.pnu.dto.cart;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

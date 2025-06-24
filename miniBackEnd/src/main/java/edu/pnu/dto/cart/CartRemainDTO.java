@@ -1,8 +1,5 @@
 package edu.pnu.dto.cart;
 
-import java.util.List;
-
-import edu.pnu.domain.Cart;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

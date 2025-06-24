@@ -1,5 +1,6 @@
 package edu.pnu.service.member;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -23,77 +24,136 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+
     private final OrderListRepository orderListRepo;
     private final GoodsOptionRepository goodsOptionRepo;
     private final OrderAddressRepository orderAddressRepo;
     private final MemberRepository memberRepo;
+
+    // 1. 주문 생성 시스템
+    @Transactional
+    public OrderList createOrder(String username, OrderRequestDTO requestDTO) {
+        Member member = memberRepo.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("[오류] 회원 정보 없음: " + username));
+
+        OrderListDTO orderInfo = requestDTO.getOrderInfo();
+        OrderAddressDTO addressDTO = requestDTO.getAddress();
+        List<OrderItemDTO> itemsDTO = requestDTO.getItems();
+
+        OrderAddress address = getOrCreateAddress(member, addressDTO);
+        OrderList order = createOrderList(member, orderInfo, address);
+        addItemsAndUpdateStock(order, itemsDTO);
+
+        return orderListRepo.save(order);
+    }
+
+    // 2. 주소 생성 / 조회 로직
+//    private OrderAddress getOrCreateAddress(Member member, OrderAddressDTO dto) {
+//        if (dto.getAddressId() != null) {
+//            return orderAddressRepo.findById(dto.getAddressId())
+//                .orElseThrow(() -> new IllegalArgumentException("[오류] 주소 없음: " + dto.getAddressId()));
+//        }
+//        return orderAddressRepo.save(OrderAddress.builder()
+//            .member(member)
+//            .addressId(dto.getAddressId())
+//            .name(dto.getName())
+//            .zip(dto.getZip())
+//            .address1(dto.getAddress1())
+//            .address2(dto.getAddress2())
+//            .phone(dto.getPhone())
+//            .main(dto.isMain())
+//            .build());
+//    }
     
-    	@Transactional
-    	public OrderList createOrder(Member member, OrderRequestDTO requestDTO) {
-    	    System.out.println("[진입] : [OrderService] 주문 내역 생성");
+    private OrderAddress getOrCreateAddress(Member member, OrderAddressDTO dto) {
+        // 기존 주소 사용 (수정/조회)
+        if (dto.getAddressId() != null) {
+            return orderAddressRepo.findById(dto.getAddressId())
+                .orElseThrow(() -> new IllegalArgumentException("[오류] 주소 없음: " + dto.getAddressId()));
+        }
 
-    	    // 1. DTO 분해
-    	    OrderListDTO dto = requestDTO.getOrderInfo();
-    	    List<OrderItemDTO> itemDTOs = requestDTO.getItems();
+        // 신규 주소 생성 (addressId는 자동 할당되므로 빼기)
+        OrderAddress newAddress = OrderAddress.builder()
+            .member(member)
+            .name(dto.getName())
+            .zip(dto.getZip())
+            .address1(dto.getAddress1())
+            .address2(dto.getAddress2())
+            .phone(dto.getPhone())
+            .main(dto.isMain())
+            .deleteAddr(false) // 논리삭제 컬럼이라면 기본 false로!
+            .build();
 
-    	    // 2. 주소 처리
-    	    OrderAddress address;
-    	    if (dto.getAddressId() != null) {
-    	        address = orderAddressRepo.findById(dto.getAddressId())
-    	            .orElseThrow(() -> new IllegalArgumentException("주소 없음"));
-    	    } else {
-    	        address = OrderAddress.builder()
-    	        	.member(member)
-    	        	.name(dto.getAddress().getName())              // 🔥 주문자 이름 추가
-    	            .zip(dto.getAddress().getZip())
-    	            .address1(dto.getAddress().getAddress1())
-    	            .address2(dto.getAddress().getAddress2())
-    	            .phone(dto.getAddress().getPhone())
-    	            .build();
-    	        orderAddressRepo.save(address);
-    	    }
+        return orderAddressRepo.save(newAddress);
+    }
 
-    	    // 3. 주문 생성
-    	    OrderList order = OrderList.builder()
-    	        .member(member)
-    	        .orderstatus(dto.getOrderstatus() != null ? dto.getOrderstatus() : "주문완료")
-    	        .total(dto.getTotal())
-    	        .payment(dto.getPayment())
-    	        .address(address)
-    	        .build();
+    // 3. 주문서 생성 로직
+    private OrderList createOrderList(Member member, OrderListDTO dto, OrderAddress address) {
+        return OrderList.builder()
+            .member(member)
+            .orderstatus(dto.getOrderstatus() != null ? dto.getOrderstatus() : "주문완료")
+            .total(dto.getTotal())
+            .payment(dto.getPayment())
+            .address(address)
+            .build();
+    }
 
-    	    // 4. 주문 아이템 처리 + 재고 차감
-    	    for (OrderItemDTO itemDTO : itemDTOs) {
-    	        GoodsOption option = goodsOptionRepo.findById(itemDTO.getOptionid())
-    	            .orElseThrow(() -> new IllegalArgumentException("옵션 없음: " + itemDTO.getOptionid()));
+    // 4. 아이템 생성 + 재고 체크 로직
+    private void addItemsAndUpdateStock(OrderList order, List<OrderItemDTO> itemDTOs) {
+        for (OrderItemDTO itemDTO : itemDTOs) {
+            GoodsOption option = goodsOptionRepo.findById(itemDTO.getOptionid())
+                .orElseThrow(() -> new IllegalArgumentException("[오류] 옵션 없음: " + itemDTO.getOptionid()));
 
-    	        if (option.getStock() < itemDTO.getQuantity()) {
-    	            throw new IllegalArgumentException("재고 부족: " + itemDTO.getOptionid());
-    	        }
+            if (option.getStock() < itemDTO.getQuantity()) {
+                throw new IllegalArgumentException("[오류] 재고 부족: " + itemDTO.getOptionid());
+            }
 
-    	        option.setStock(option.getStock() - itemDTO.getQuantity());
+            option.setStock(option.getStock() - itemDTO.getQuantity());
 
-    	        OrderItem orderItem = OrderItem.builder()
-    	            .orderList(order)
-    	            .goodsOption(option)
-    	            .quantity(itemDTO.getQuantity())
-    	            .price(itemDTO.getPrice())
-    	            .build();
+            OrderItem item = OrderItem.builder()
+                .orderList(order)
+                .goodsOption(option)
+                .quantity(itemDTO.getQuantity())
+                .price(itemDTO.getPrice())
+                .build();
 
-    	        order.getItems().add(orderItem);
-    	    }
+            order.getItems().add(item);
+        }
+    }
+   	
 
-    	    // 5. 저장
-    	    orderListRepo.save(order);
-    	    System.out.println("[성공] : 주문 저장 완료");
-    	    return order;
-    	}
-    	
-    	@Transactional
-    	public OrderList createOrderByUsername(String username, OrderRequestDTO dto) {
-    	    Member member = memberRepo.findByUsername(username)
-    	        .orElseThrow(() -> new IllegalArgumentException("회원 없음"));
-    	    
-    	    return createOrder(member, dto);
-    	}
+    // ✅ 내 주문 내역 조회
+    @Transactional
+    public List<OrderRequestDTO> getMyOrders(String username) {
+        List<OrderList> orders = orderListRepo.findByMember_Username(username);
+
+        List<OrderRequestDTO> results = new ArrayList<>();
+
+        for (OrderList order : orders) {
+            // 1️. 주소 처리
+            OrderAddressDTO addressDTO = null;
+            if (order.getAddress() != null) {
+                addressDTO = OrderAddressDTO.fromEntity(order.getAddress());
+            }
+
+            // 2️. 아이템 처리
+            List<OrderItemDTO> itemDTOList = new ArrayList<>();
+            if (order.getItems() != null && !order.getItems().isEmpty()) {
+                for (OrderItem item : order.getItems()) {
+                    itemDTOList.add(OrderItemDTO.fromEntity(item));
+                }
+            }
+
+            // 3️. DTO 생성
+            OrderRequestDTO requestDTO = OrderRequestDTO.builder()
+                .orderInfo(OrderListDTO.fromEntity(order))
+                .address(addressDTO)
+                .items(itemDTOList)
+                .build();
+
+            results.add(requestDTO);
+        }
+
+        return results;
+    }
 }

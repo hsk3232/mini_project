@@ -42,6 +42,10 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(auth -> auth
 				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/api/public/**").permitAll()
+				.requestMatchers(
+		                "/swagger-ui/**",
+		                "/v3/api-docs/**"
+		            ).permitAll()
 				.requestMatchers("/api/member/**").authenticated()
 				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 

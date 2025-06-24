@@ -38,10 +38,14 @@ public class WishList {
 	private Member member;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "imgname", referencedColumnName = "imgname", insertable = false, updatable = false)
+    @JoinColumn(name = "imgname", referencedColumnName = "imgname")
     private Goods goods;
 	
 	@CreationTimestamp
 	@Column(updatable = false, name = "createdat")
 	private LocalDateTime createdat;
+	
+	@Column(columnDefinition = "TINYINT(1)")
+	@Builder.Default
+	private boolean remain = true;
 }

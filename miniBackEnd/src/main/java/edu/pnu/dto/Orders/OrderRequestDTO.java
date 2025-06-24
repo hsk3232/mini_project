@@ -17,5 +17,6 @@ import lombok.ToString;
 @Builder
 public class OrderRequestDTO {
     private OrderListDTO orderInfo;        // 주문 정보(이름, 주소, 결제 등)
+    private OrderAddressDTO address;		// 주소
     private List<OrderItemDTO> items;      // 주문 상세(옵션별, 수량/가격 등)
 }

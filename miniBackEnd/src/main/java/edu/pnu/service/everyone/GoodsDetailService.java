@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import edu.pnu.domain.Goods;
-import edu.pnu.domain.Review;
-import edu.pnu.dto.Orders.ReviewDTO;
 import edu.pnu.dto.goods.GoodsDTO;
 import edu.pnu.dto.goods.GoodsOptionDTO;
 import edu.pnu.dto.goods.ImgAdressDTO;
@@ -36,7 +34,4 @@ public class GoodsDetailService {
         return GoodsDTO.fromEntity(goods, goods.getDescription(), options, imglist);
     }
     
-    public Review getReviewList(ReviewDTO dto) {
-    	return null;
-    }
 }

@@ -20,35 +20,43 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter 
+@Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity	
-public class Review {
+@Entity
+public class ReviewList {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int reviewid;
+	private Long reviewid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orderid")
 	private OrderList orderList;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "username")  // FK 이름
+	@JoinColumn(name = "username") // FK 이름
 	private Member member;
-	
-	private String imgname;
-	private String optionid;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "imgname", referencedColumnName = "imgname")
+	private Goods goods;
+
 	private String reviewtext;
 	private int rating;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "optionid")
+	private GoodsOption goodsOption;
 
 	@CreationTimestamp
 	@Column(updatable = false, name = "createdat")
 	private LocalDateTime createdat;
-	
-	
+
+	@Column(columnDefinition = "TINYINT(1)")
+	@Builder.Default
+	private boolean remain = true;
 
 }

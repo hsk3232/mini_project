@@ -29,5 +29,6 @@ public interface GoodsRepository extends JpaRepository<Goods, String>, JpaSpecif
 	List<Goods> findAllByOrderByRegisterdateDesc();
 
 	List<Goods> findTop20ByProductNameContainingIgnoreCase(String keyword);
-
+	
+	Goods findByImgname(String imgname);
 }

@@ -36,7 +36,11 @@ public class CartService {
 				.orElseThrow(() -> new IllegalArgumentException("회원 없음: " + username));
 
 		// 회원의 장바구니가 없다면 생성.
-		Cart cart = cartRepo.findByMember_Username(username);
+		 Cart cart = cartRepo.findByMember_Username(username);
+		    if (cart == null) {
+		        cart = new Cart(member);
+		        cartRepo.save(cart);
+		    }
 
 		// 장바구니에 담을 상품 옵션을 조회하고 CartList에 저장
 		for (CartItemDTO d : items) {
@@ -88,7 +92,7 @@ public class CartService {
 		List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
 			    .filter(CartItem::isRemain)
 			    .map(CartItemDTO::fromEntity)
-			    .collect(Collectors.toList());
+			    .toList();
 
 				CartDTO dto = new CartDTO();         // 📌 변경됨!
 				dto.setItems(itemDTOs);              // 📌 변경됨!
@@ -115,7 +119,7 @@ public class CartService {
 	public void deleteItemFromCart(String optionid, String username) {
 
 		Cart cart = cartRepo.findByMember_Username(username);
-
+		
 		CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionid, cart)
 				.orElseThrow(() -> new IllegalArgumentException("해당 상품이 장바구니에 없음"));
 
