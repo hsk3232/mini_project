@@ -1,13 +1,15 @@
 package edu.pnu.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.pnu.dto.Orders.ReviewListDTO;
 import edu.pnu.dto.goods.AdGoodsDTO;
 import edu.pnu.service.everyone.GoodsService;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +49,15 @@ public class GoodsController {
 	    return ResponseEntity.ok(goodsService.getRecommendGoods(username));
 	}
 	
-
 	
+	@GetMapping("/reviews/product/{imgname}")
+	public List<ReviewListDTO> getProductReviews(@PathVariable String imgname) {
+		System.out.println("[진입] : [GoodsController] 상품 리뷰 조회 진입 ");
+		List<ReviewListDTO> review = goodsService.getReviewsByImgname(imgname);
+		System.out.println("[성공] : [GoodsController] 상품 리뷰 조회 성공 ");
+	    return review;
+	}
+
 
 
 }

@@ -42,10 +42,7 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(auth -> auth
 				.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/api/public/**").permitAll()
-				.requestMatchers(
-		                "/swagger-ui/**",
-		                "/v3/api-docs/**"
-		            ).permitAll()
+				.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 				.requestMatchers("/api/member/**").authenticated()
 				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 
@@ -76,6 +73,7 @@ public class SecurityConfig {
 	private CorsConfigurationSource corsSource() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.addAllowedOriginPattern("http://localhost:5173"); // 요청을 허용할 서버
+		config.addAllowedOriginPattern("https://*.ngrok.io");
 		config.addAllowedMethod(CorsConfiguration.ALL); // 요청을 허용할 Method
 		config.addAllowedHeader(CorsConfiguration.ALL); // 요청을 허용할 Header
 		config.setAllowCredentials(true); // 요청/응답에 자격증명정보/쿠키 포함을 허용

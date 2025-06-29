@@ -15,12 +15,13 @@ public class GoodsOptionDTO {
 	private Integer stock;
 	
 	public static GoodsOptionDTO fromEntity(GoodsOption option) {
-        return GoodsOptionDTO.builder()
-        		.optionid(option.getOptionid())
-        		.imgname(option.getImgname())
-                .size(option.getSize())
-                .stock(option.getStock())
-                .fullcode(option.getFullcode())
-                .build();
-    }
+	    return GoodsOptionDTO.builder()
+	            .optionid(option.getOptionid())
+	            .imgname(option.getGoods() != null ? option.getGoods().getImgname() : null)
+	            .fullcode(option.getFullcode())
+	            .size(option.getSize())
+	            .stock(option.getStock())
+	            .build();
+	}
+
 }

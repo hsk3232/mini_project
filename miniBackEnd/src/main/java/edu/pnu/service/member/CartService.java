@@ -23,117 +23,110 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CartService {
-	private final CartRepository cartRepo;
-	private final GoodsOptionRepository goodsOptionRepo;
-	private final MemberRepository memberRepo;
-	private final CartItemRepository cartItemRepo;
 
-	// 1. 장바구니 DB 저장 메서드
-	@Transactional
-	public void addToCart(List<CartItemDTO> items, String username) {
+    private final CartRepository cartRepo;
+    private final GoodsOptionRepository goodsOptionRepo;
+    private final MemberRepository memberRepo;
+    private final CartItemRepository cartItemRepo;
 
-		Member member = memberRepo.findByUsername(username)
-				.orElseThrow(() -> new IllegalArgumentException("회원 없음: " + username));
+    // 🔹 공통: 카트 조회 + 없으면 예외
+    private Cart findCartOrThrow(String username) {
+        return cartRepo.findByMember_Username(username)
+                .orElseThrow(() -> new IllegalArgumentException("카트가 존재하지 않습니다: " + username));
+    }
 
-		// 회원의 장바구니가 없다면 생성.
-		 Cart cart = cartRepo.findByMember_Username(username);
-		    if (cart == null) {
-		        cart = new Cart(member);
-		        cartRepo.save(cart);
-		    }
+    // 1️⃣ 장바구니 담기 (없으면 카트 생성)
+    @Transactional
+    public void addToCart(List<CartItemDTO> items, String username) {
+        Member member = memberRepo.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("회원 없음: " + username));
 
-		// 장바구니에 담을 상품 옵션을 조회하고 CartList에 저장
-		for (CartItemDTO d : items) {
-			GoodsOption option = goodsOptionRepo.findById(d.getOptionid())
-					.orElseThrow(() -> new IllegalArgumentException("옵션 없음: " + d.getOptionid()));
+        Cart cart = cartRepo.findByMember_Username(username)
+                .orElseGet(() -> {
+                    Cart newCart = new Cart(member);
+                    return cartRepo.save(newCart);
+                });
 
-			CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(d.getOptionid(), cart).orElse(null);
+        for (CartItemDTO d : items) {
+            GoodsOption option = goodsOptionRepo.findById(d.getOptionid())
+                    .orElseThrow(() -> new IllegalArgumentException("옵션 없음: " + d.getOptionid()));
 
-			if (item != null) {
-				item.setQuantity(item.getQuantity() + d.getQuantity());
-			} else {
-				CartItem newItem = new CartItem(option, cart, d.getQuantity());
-				cartItemRepo.save(newItem);
-			}
-		}
-	}
+            CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(d.getOptionid(), cart).orElse(null);
+            if (item != null) {
+                item.setQuantity(item.getQuantity() + d.getQuantity());
+            } else {
+                CartItem newItem = new CartItem(option, cart, d.getQuantity());
+                cartItemRepo.save(newItem);
+            }
+        }
+    }
 
-	// 2. 장바구니 front 전달 메서드
-	public CartDTO getCart(String username) {
-		Cart cart = cartRepo.findByMember_Username(username);
-		// 📌 변경됨! remain == true인 항목만 필터링
-						List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
-					    .filter(CartItem::isRemain)
-					    .map(CartItemDTO::fromEntity)
-					    .collect(Collectors.toList());
+    // 2️⃣ 장바구니 조회 (없으면 빈 DTO 반환)
+    public CartDTO getCart(String username) {
+        return cartRepo.findByMember_Username(username)
+                .map(this::buildCartDTO)
+                .orElseGet(CartDTO::new); // 카트 없으면 빈 DTO
+    }
 
-				CartDTO dto = new CartDTO();         // 📌 변경됨!
-				dto.setItems(itemDTOs);              // 📌 변경됨!
-				return dto;                          // 📌 변경됨!
-			}
+    // 3️⃣ 장바구니 수량 변경
+    @Transactional
+    public CartDTO updateCart(String username, String optionId, int quantityChange) {
+        Cart cart = findCartOrThrow(username);
 
-	// 3. 장바구니 업데이트 메서드
-	@Transactional
-	public CartDTO updateCart(String username, String optionId, int quantityChange) {
-		Cart cart = cartRepo.findByMember_Username(username);
+        CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionId, cart)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품 없음: " + optionId));
 
-		CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionId, cart)
-				.orElseThrow(() -> new IllegalArgumentException("해당 상품 없음"));
+        int newQty = item.getQuantity() + quantityChange;
+        if (newQty <= 0) {
+            cartItemRepo.delete(item);
+        } else {
+            item.setQuantity(newQty);
+        }
 
-		int newQty = item.getQuantity() + quantityChange;
+        return buildCartDTO(cart);
+    }
 
-		if (newQty <= 0) {
-			cartItemRepo.delete(item);
-		} else {
-			item.setQuantity(newQty);
-		}
+    // 4️⃣ 장바구니 remain 상태 변경
+    @Transactional
+    public void updateRemainStatus(CartRemainListDTO items, String username) {
+        Cart cart = findCartOrThrow(username);
 
-		// 📌 변경됨! 수량 변경 후 remain == true인 항목만 반환
-		List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
-			    .filter(CartItem::isRemain)
-			    .map(CartItemDTO::fromEntity)
-			    .toList();
+        for (CartRemainDTO dto : items.getItems()) {
+            CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(dto.getOptionid(), cart)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 상품 없음: " + dto.getOptionid()));
+            item.setRemain(!item.isRemain());
+            cartItemRepo.save(item);
+        }
+    }
 
-				CartDTO dto = new CartDTO();         // 📌 변경됨!
-				dto.setItems(itemDTOs);              // 📌 변경됨!
-				return dto;                          // 📌 변경됨!
-			}
+    // 5️⃣ 장바구니 특정 상품 삭제
+    @Transactional
+    public void deleteItemFromCart(String optionid, String username) {
+        Cart cart = findCartOrThrow(username);
 
-	// 4. 장바구니에서 주문한 상품 제거
-	@Transactional
-	public void updateRemainStatus(CartRemainListDTO items, String username) {
+        CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionid, cart)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품 없음: " + optionid));
 
-	    Cart cart = cartRepo.findByMember_Username(username);
+        cartItemRepo.delete(item);
+    }
 
-	    for (CartRemainDTO dto : items.getItems()) {
-	        CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(dto.getOptionid(), cart)
-	            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 장바구니에 없음"));
+    // 6️⃣ 장바구니 전체 비우기
+    @Transactional
+    public void deleteClearCart(String username) {
+        Cart cart = findCartOrThrow(username);
+        List<CartItem> items = cartItemRepo.findByCart(cart);
+        cartItemRepo.deleteAll(items);
+    }
 
-	        item.setRemain(!item.isRemain());// 🔥 remain 값만 변경
-	        cartItemRepo.save(item); // 변경 사항 반영
-	    }
-	}
+    // 🔹 공통 DTO 생성 메서드
+    private CartDTO buildCartDTO(Cart cart) {
+        List<CartItemDTO> itemDTOs = cart.getCartItems().stream()
+                .filter(CartItem::isRemain)
+                .map(CartItemDTO::fromEntity)
+                .collect(Collectors.toList());
 
-	// 4. 장바구니에서 특정 상품 제거
-	@Transactional
-	public void deleteItemFromCart(String optionid, String username) {
-
-		Cart cart = cartRepo.findByMember_Username(username);
-		
-		CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(optionid, cart)
-				.orElseThrow(() -> new IllegalArgumentException("해당 상품이 장바구니에 없음"));
-
-		cartItemRepo.delete(item);
-	}
-
-	// 4. 장바구니 전체 비우기
-	@Transactional
-	public void deleteClearCart(String username) {
-
-		Cart cart = cartRepo.findByMember_Username(username);
-
-		List<CartItem> items = cartItemRepo.findByCart(cart);
-		cartItemRepo.deleteAll(items);
-	}
-
+        CartDTO dto = new CartDTO();
+        dto.setItems(itemDTOs);
+        return dto;
+    }
 }

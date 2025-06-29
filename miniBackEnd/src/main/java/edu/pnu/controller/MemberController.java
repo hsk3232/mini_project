@@ -19,6 +19,7 @@ import edu.pnu.dto.Orders.ReviewListDTO;
 import edu.pnu.dto.goods.WishListDTO;
 import edu.pnu.dto.member.MemberInfoDTO;
 import edu.pnu.dto.member.MemberResponseDTO;
+import edu.pnu.dto.member.PasswordChangeRequestDTO;
 import edu.pnu.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -53,11 +54,10 @@ public class MemberController {
 
 	// 2-2. 비밀번호 변경
 	@PatchMapping("/password")
-	public ResponseEntity<String> changePassword(Principal principal, @RequestBody String newPassword) {
-		String username = principal.getName();
-
-		memberService.changePassword(username, newPassword);
-		return ResponseEntity.ok("비밀번호 변경 완료");
+	public ResponseEntity<String> changePassword(Principal principal, @RequestBody PasswordChangeRequestDTO req) {
+	    String username = principal.getName();
+	    memberService.changePassword(username, req.getCurrentPassword(), req.getNewPassword());
+	    return ResponseEntity.ok("비밀번호 변경 완료");
 	}
 
 	// 2-3-1. 배송지 목록 확인
@@ -109,6 +109,7 @@ public class MemberController {
 	    System.out.println("[성공] : [MemberController] review리스트 성공");
 	    return reviewList;
 	}
+	
 
 	// 리뷰 추가
 	@PostMapping("/addreviews")
@@ -143,7 +144,7 @@ public class MemberController {
 		return wishList;
 	}
 
-	// 6. Wish 추가
+	// 6-1. Wish 추가
 	@PostMapping("/addwish")
 	public List<WishListDTO> addMyWishList(Principal principal, @RequestBody String imgname) {
 		System.out.println(imgname);
@@ -154,7 +155,7 @@ public class MemberController {
 		return wishList;
 	}
 
-	//
+	// 6-2. Wish 삭제
 	@DeleteMapping("/deletewish")
 	public List<WishListDTO> deleteMyWishList(Principal principal, @RequestParam String imgname) {
 	    System.out.println("[진입] : [MemberController] Wish 삭제 진입 ");
@@ -162,8 +163,8 @@ public class MemberController {
 	    List<WishListDTO> list = memberService.deleteMyWishList(username, imgname);
 	    return list;
 	}
-
-
+	
+	// 6-3. WishList 유지
 	@GetMapping("/heartOn")
 	public boolean heartOn(Principal principal, @RequestParam String imgname) {
 		System.out.println("[진입] : [MemberController] Wish리스트 on/off 진입 ");

@@ -33,7 +33,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 		System.out.println("[진입] : [JWTAuthorizationFilter] 토큰 확인 필터 진입");
 		
 		String srcToken = request.getHeader(HttpHeaders.AUTHORIZATION); // 요청 헤더에서 Authorization을 얻어온다.
-		System.out.println("▶▶▶▶발행된 토큰 ▶▶▶▶"+ srcToken);
+		System.out.println("[발행된 토큰] : "+ srcToken);
 		
 		if (srcToken == null || !srcToken.startsWith("Bearer ")) { // 없거나 “Bearer ”로 시작하지 않는다면
 			System.out.println("[진입] : [JWTAuthorizationFilter] 토큰 없음 \n");

@@ -3,15 +3,15 @@ package edu.pnu.service.everyone;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import edu.pnu.domain.Goods;
-import edu.pnu.domain.Member;
 import edu.pnu.domain.SearchHistory;
+import edu.pnu.dto.Orders.ReviewListDTO;
 import edu.pnu.dto.goods.AdGoodsDTO;
 import edu.pnu.dto.goods.GoodsDTO;
 import edu.pnu.persistence.GoodsRepository;
+import edu.pnu.persistence.ReviewRepository;
 import edu.pnu.persistence.SearchHistoryRepository;
 import edu.pnu.util.GoodsImgUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,7 @@ public class GoodsService {
 
 	private final GoodsRepository goodsRepo;
 	private final SearchHistoryRepository searchHistoryRepo;
+	private final ReviewRepository reviewRepo; // 리뷰
 	
 	// 1. 인기 상품 (조회수 Top 10)
 	public AdGoodsDTO getPopularGoods() {
@@ -59,5 +60,11 @@ public class GoodsService {
 		
 		return AdGoodsDTO.builder().recommendedItems(recommendedItems).build();
 	}
-
+	
+	public List<ReviewListDTO> getReviewsByImgname(String imgname) {
+	    return reviewRepo.findAllByGoods_ImgnameAndRemainTrue(imgname)
+	        .stream()
+	        .map(ReviewListDTO::fromEntity)
+	        .toList();
+	}
 }

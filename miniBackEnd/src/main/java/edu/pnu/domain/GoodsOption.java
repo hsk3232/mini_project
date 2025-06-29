@@ -32,16 +32,29 @@ public class GoodsOption {
     @Column(length = 100)
     private String optionid; // 옵션 고유코드(PK)
 
-    private String imgname; // FK
-
     private String fullcode;
     private String size;
     private Integer stock;
 
-    // N:1 (imgname으로 goods와 연결)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "imgname", referencedColumnName = "imgname", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY) // FK
+    @JoinColumn(name = "imgname", referencedColumnName = "imgname")
     private Goods goods;
+
+    // 재고 감소 로직
+    public void decreaseStock(int quantity) {
+        if (this.stock == null || this.stock < quantity) {
+            throw new IllegalArgumentException("[오류] 재고 부족: " + this.optionid);
+        }
+        this.stock -= quantity;
+    }
+
+    // (필요하면) 재고 증가
+    public void increaseStock(int quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("[오류] 잘못된 수량: " + quantity);
+        }
+        this.stock += quantity;
+    }
     
     @OneToMany(mappedBy = "goodsOption", fetch = FetchType.LAZY)
     private List<OrderItem> orderList;

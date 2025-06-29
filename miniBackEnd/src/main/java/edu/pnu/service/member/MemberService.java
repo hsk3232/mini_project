@@ -69,12 +69,16 @@ public class MemberService {
 	
 	// 3. 비밀번호 변경 로직
 	@Transactional
-	public void changePassword(String username, String newPassword) {
-		Member member = memberRepo.findById(username)
-				.orElseThrow(() -> new IllegalArgumentException("[오류] 회원 정보가 없습니다: " + username));
-		// 🔐 비밀번호 암호화 후 저장
-		member.setPassword(passwordEncoder.encode(newPassword));
-		memberRepo.save(member);
+	public void changePassword(String username, String currentPassword, String newPassword) {
+	    Member member = memberRepo.findById(username)
+	            .orElseThrow(() -> new IllegalArgumentException("[오류] 회원 정보가 없습니다: " + username));
+
+	    if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+	        throw new IllegalArgumentException("[오류] 현재 비밀번호가 일치하지 않습니다.");
+	    }
+
+	    member.setPassword(passwordEncoder.encode(newPassword));
+	    memberRepo.save(member);
 	}
 
 	
@@ -208,14 +212,15 @@ public class MemberService {
 
 	// 리뷰 논리 삭제
 	public List<ReviewListDTO> deleteMyReviewList(String username, Long orderid) {
-	    ReviewList review = reviewRepo.existsByMember_UsernameAndOrderList_Orderid(username, orderid);
-	    review.setRemain(false);
-	    reviewRepo.save(review);
+		ReviewList review = reviewRepo.findByMember_UsernameAndOrderList_Orderid(username, orderid)
+	    	    .orElseThrow(() -> new IllegalArgumentException("리뷰 없음"));
+	    	review.setRemain(false);
+	    	reviewRepo.save(review);
 	    return getMyReviews(username);
+	    
+	    
 	}
 
-	
-	
 
 	// 6-1. wishList 조회
 	public List<WishListDTO> getMyWishList(String username) {
@@ -240,8 +245,6 @@ public class MemberService {
 		// 2. 항상 현재 목록 반환
 		return wishListRepo.findByMemberUsername(username).stream().map(WishListDTO::fromEntity).toList();
 	}
-
-	
 	
 	
 	// 6-3. wishList 삭제

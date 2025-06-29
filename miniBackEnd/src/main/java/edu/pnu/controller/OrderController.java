@@ -32,7 +32,7 @@ public class OrderController {
 		return ResponseEntity.ok(order.getOrderid());
 	}
 
-	// ✅ 내 주문 내역 조회 (OrderRequestDTO로 응답)
+	// 내 주문 내역 조회 (OrderRequestDTO로 응답)
 	@GetMapping("/orderlist")
 	public ResponseEntity<?> getMyOrders(Principal principal) {
 		try {
@@ -42,6 +42,7 @@ public class OrderController {
 			System.out.println("[성공] : [OrderController] 내역조회 성공");
 			return ResponseEntity.ok(orders);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			return ResponseEntity.internalServerError().body("[오류] 주문 내역 조회 실패");
 		}
 	}
