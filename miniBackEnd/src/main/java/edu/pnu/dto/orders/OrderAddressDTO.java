@@ -1,4 +1,4 @@
-package edu.pnu.dto.Orders;
+package edu.pnu.dto.orders;
 
 import edu.pnu.domain.Member;
 import edu.pnu.domain.OrderAddress;

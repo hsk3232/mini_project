@@ -1,4 +1,4 @@
-package edu.pnu.dto.Orders;
+package edu.pnu.dto.orders;
 
 import edu.pnu.domain.GoodsOption;
 import edu.pnu.domain.OrderItem;

@@ -1,4 +1,4 @@
-package edu.pnu.dto.Orders;
+package edu.pnu.dto.orders;
 
 import java.time.LocalDateTime;
 

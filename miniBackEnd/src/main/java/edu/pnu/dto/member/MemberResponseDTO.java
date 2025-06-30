@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 import edu.pnu.domain.Member;
 import edu.pnu.domain.OrderAddress;
-import edu.pnu.dto.Orders.OrderAddressDTO;
+import edu.pnu.dto.orders.OrderAddressDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

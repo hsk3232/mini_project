@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.pnu.dto.Orders.ReviewListDTO;
 import edu.pnu.dto.goods.AdGoodsDTO;
+import edu.pnu.dto.orders.ReviewListDTO;
 import edu.pnu.service.everyone.GoodsService;
 import lombok.RequiredArgsConstructor;
 

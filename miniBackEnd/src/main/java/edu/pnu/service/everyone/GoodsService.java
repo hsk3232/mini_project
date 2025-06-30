@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import edu.pnu.domain.Goods;
 import edu.pnu.domain.SearchHistory;
-import edu.pnu.dto.Orders.ReviewListDTO;
 import edu.pnu.dto.goods.AdGoodsDTO;
 import edu.pnu.dto.goods.GoodsDTO;
+import edu.pnu.dto.orders.ReviewListDTO;
 import edu.pnu.persistence.GoodsRepository;
 import edu.pnu.persistence.ReviewRepository;
 import edu.pnu.persistence.SearchHistoryRepository;

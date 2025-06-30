@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.pnu.domain.OrderList;
-import edu.pnu.dto.Orders.OrderRequestDTO;
+import edu.pnu.dto.orders.OrderRequestDTO;
 import edu.pnu.service.member.OrderService;
 import lombok.RequiredArgsConstructor;
 

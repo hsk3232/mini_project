@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.pnu.dto.Orders.OrderAddressDTO;
-import edu.pnu.dto.Orders.ReviewAddRequestDTO;
-import edu.pnu.dto.Orders.ReviewListDTO;
 import edu.pnu.dto.goods.WishListDTO;
 import edu.pnu.dto.member.MemberInfoDTO;
 import edu.pnu.dto.member.MemberResponseDTO;
 import edu.pnu.dto.member.PasswordChangeRequestDTO;
+import edu.pnu.dto.orders.OrderAddressDTO;
+import edu.pnu.dto.orders.ReviewAddRequestDTO;
+import edu.pnu.dto.orders.ReviewListDTO;
 import edu.pnu.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 
