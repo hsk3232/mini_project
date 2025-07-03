@@ -9,9 +9,9 @@
 
 
 # 2️⃣ QnA 주요 요청/응답 JSON 예시
-2️⃣ QnA 주요 요청/응답 JSON 예시
 
-🔵 상품 정보 조회 (GET /api/member/qnagoodsinfo)
+
+## 🔵 상품 정보 조회 (GET /api/member/qnagoodsinfo)
 요청 Body:
 ```json
 {
@@ -28,7 +28,7 @@
 }
 ```
 
-🟢 QnA 등록 (POST /api/member/addqna)
+## 🟢 QnA 등록 (POST /api/member/addqna)
 요청 Body:
 ```json
 {
@@ -54,7 +54,7 @@
 ]
 ```
 
-🟣QnA 목록 조회 (GET /api/member/qnalist)
+## 🟣QnA 목록 조회 (GET /api/member/qnalist)
 응답 Body (배열):
 ```json
 [
@@ -71,7 +71,7 @@
 ]
 ```
 
-🔴QnA 삭제 (PATCH /api/member/deleteqna)
+## 🔴QnA 삭제 (PATCH /api/member/deleteqna)
 요청 Body:
 ```json
 {
