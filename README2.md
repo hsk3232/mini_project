@@ -14,14 +14,14 @@
 🔵 상품 정보 조회 (GET /api/member/qnagoodsinfo)
 요청 Body:
 ```json
-{{
+{
   "imgname": "108775051"
 }
 ```
 
 응답 Body:응답 Body:
 ```json
-{{
+{
   "imgname": "108775051",
   "productname": "Fog Stripe 감각적인 슬리브리스 탑",
   "price": 18200
@@ -31,7 +31,7 @@
 🟢 QnA 등록 (POST /api/member/addqna)
 요청 Body:
 ```json
-{{
+{
   "imgname": "108775051",
   "question": "이거 사이즈 xxxl은 없나여? 제가 돼지라서여..."
 }
