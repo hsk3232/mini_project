@@ -1,4 +1,101 @@
-# 📚 API 엔드포인트/JSON/코드 정리
+# 🌺 KALANI — 노가다로 빚어낸 쇼핑 스토어
+
+> **팀명:** 취업시켜  
+> **FE**: 강나현 &nbsp;&nbsp;|&nbsp;&nbsp; **BE**: 홍지민  
+
+---
+
+## 🌈 프로젝트 소개
+
+**KALANI**는 하와이어로 ‘하늘(heaven)’, ‘천국’, ‘고귀한’을 의미합니다.  
+직접 데이터를 만들고, 사진을 촬영/가공해서 만든 리얼 쇼핑몰 웹 서비스입니다.  
+H&M 의류 상품 이미지를 기반으로, 실제 쇼핑몰 환경과 최대한 유사하게 구현했습니다.
+
+- **Frontend:** React, Vite, JavaScript, TailwindCSS  
+- **Backend:** Spring Boot, JPA, JWT, Spring Security  
+- **Database:** MySQL  
+
+---
+
+## 🗂️ 활용 데이터
+
+- **데이터 출처:** Kaggle, 자체 생성(직접 촬영 및 가공)
+- **주요 콘텐츠:** H&M 의류 상품 사진, 쇼핑몰에 적합한 상품 정보
+
+---
+
+## 🧩 주요 기능
+
+- 회원가입 / 로그인 / 내 정보 관리  
+- 장바구니(담기, 수량 수정, 항목 삭제)  
+- 주문 생성 / 주문 내역 조회  
+- 카테고리별 상품 탐색(전체, 트리, 필터, 인기/추천, 상세)
+
+---
+
+## ⚙️ API 명세 및 화면 설계
+
+| 화면명           | API 경로                                         | 설명           |
+|:----------------|:-------------------------------------------------|:---------------|
+| 회원가입         | `/api/public/join`                               | Users-01, 02   |
+| 내 정보 조회/수정 | `/api/member/info`, `/api/member/infoEdit`       | Users-03, 04   |
+| 장바구니 담기    | `/api/member/cart/add`                           | cart-01, 02    |
+| 장바구니 수정/삭제 | `/api/member/cart/update`, `/delete/{id}`        | cart-03, 04    |
+| 주문/주문내역    | `/api/member/orders`, `/orderlist`               | Order-01, 02   |
+| 카테고리 전체 조회 | `/api/member/category`, `/categoryTree`          | Category-01, 02|
+| 카테고리 상품 검색 | `/api/member/category/goods`                     | Category-03    |
+| 인기/추천 상품   | `/api/public/popular`, `/api/public/recommend`   | Goods-01, 02   |
+| 상품 상세        | `/api/public/detail/{imgname}`                   | Goods-03       |
+
+- 자세한 API 명세: [Swagger 문서](https://app.swaggerhub.com/draft/hongjimin-be4#/)
+- 화면 설계서 및 예시는 별도 공유
+
+---
+
+## 🛠️ 시스템 구성도
+
+- FE: React + Vite (TailwindCSS)
+- BE: Spring Boot (JPA, JWT, Spring Security)
+- DB: MySQL
+
+---
+
+## 🗃️ Database 설계 (ERD)
+
+- [ERD 설계 바로가기](https://dbdiagram.io/d/mini_projesct-6859b96af039ec6d36893f6b)
+
+---
+
+## 🚀 배포 및 실행 방법
+
+### 프론트엔드
+
+```bash
+npm install
+npm run dev
+```
+### 백엔드
+
+- JDK 17 이상 설치  
+- MySQL 세팅 및 application.yml 환경 변수 입력  
+- IDE에서 Spring Boot 실행  
+
+---
+
+## 📬 문의 및 연락
+
+- FE 강나현: [이메일/연락처]  
+- BE 홍지민: [이메일/연락처]  
+- 이슈/버그/건의: GitHub Issue  
+
+---
+
+## ✨ Special Thanks
+
+데이터 수집/가공, 팀원들의 노가다,  
+그리고 이 README를 읽어주시는 모든 분께 감사드립니다!  
+취업시켜 조, 파이팅! 👊
+
 
 ---
 
