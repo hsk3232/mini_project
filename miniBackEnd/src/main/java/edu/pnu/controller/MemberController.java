@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.pnu.dto.goods.QnAGoodsInfoDTO;
+import edu.pnu.dto.goods.QnAListDTO;
+import edu.pnu.dto.goods.QnAPatchDTO;
+import edu.pnu.dto.goods.QnAaddRequestDTO;
 import edu.pnu.dto.goods.WishListDTO;
 import edu.pnu.dto.member.MemberInfoDTO;
 import edu.pnu.dto.member.MemberResponseDTO;
@@ -174,5 +178,48 @@ public class MemberController {
 
 		return result;
 	}
+	
+	// 4. qna 목록 조회
+		@GetMapping("/qnalist")
+		public List<QnAListDTO> getMyQnA(Principal principal) {
+		    System.out.println("[진입] : [MemberController] QnA리스트 진입 ");
+		    List<QnAListDTO> QnAList = memberService.getMyQnA(principal.getName());
+		    System.out.println("[성공] : [MemberController] QnA리스트 성공");
+		    return QnAList;
+		}
+		
+		
+		// qna 상품 정보
+		@GetMapping("/qnagoodsinfo")
+		public QnAGoodsInfoDTO getGoodsInfo(@RequestBody String imgname) {
+			System.out.println("[진입] : [MemberController] QnA 상품정보 수령 진입");
+			QnAGoodsInfoDTO info = memberService.getGoodsInfo(imgname);
+			System.out.println("[성공] : [MemberController] QnA 상품정보 수령 성공");
+			return info;
+		}
+
+		// qna 추가 - DBMS에 입력하는 부분으로 DTO 필요 없음
+		@PostMapping("/addqna")
+		public List<QnAListDTO> addMyQnA(Principal principal, @RequestBody QnAaddRequestDTO q) {
+		    System.out.println("[진입] : [MemberController] QnA 작성 진입 ");
+		    String username = principal.getName();
+		    List<QnAListDTO> result = memberService.addMyQnA(
+		        username,
+		        q.getImgname(),
+		        q.getQuestion()
+		    );
+		    System.out.println("[성공] : [MemberController] QnA 작성 성공 ");
+		    return result;
+		}
+
+		// 리뷰 삭제 Patch 님은 무조건 DTO로 전달해야 안전하단다.. 참나
+		@PatchMapping("/deleteqna")
+		public List<QnAListDTO> deleteMyQnA(Principal principal, @RequestBody QnAPatchDTO p) {
+			System.out.println("[진입] : [MemberController] QnA 삭제 진입 ");
+			String username = principal.getName();
+			List<QnAListDTO> del = memberService.deleteMyQnA(username, p.getQaid());
+		    System.out.println("[성공] : [MemberController] QnA 삭제 성공 ");
+		    return del;
+		}
 
 }

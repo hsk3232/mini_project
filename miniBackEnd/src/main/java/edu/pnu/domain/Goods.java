@@ -59,5 +59,4 @@ public class Goods {
     // 1:N 이미지(여러 장일 경우)
     @OneToMany(mappedBy = "goods", fetch = FetchType.LAZY)
     private List<ImgAdress> imgAdressList;
-
 }

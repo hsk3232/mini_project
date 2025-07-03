@@ -86,7 +86,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		// 이것은 하나의 예시로서 필요에 따라 추가 정보를 담을 수 있다.
 		System.out.println("[진행] : [JWTAuthenticationFilter] JWTAuthorizationFilter로 정보 이동 \n");
 		String token = JWT.create()
-				.withExpiresAt(new Date(System.currentTimeMillis()+1000*60*100))
+				.withExpiresAt(new Date(System.currentTimeMillis()+1000*60*100000))
 				.withClaim("username", user.getUsername())
 				.sign(Algorithm.HMAC256("edu.pnu.jwt"));
 		

@@ -31,24 +31,37 @@ import lombok.ToString;
 public class QnA {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int qaid;
+	private Long qaid;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "username")
 	private Member member;
 	
-	private String imgname;
+	
+	// N:1 (imgname으로 goods와 연결)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "imgname", referencedColumnName = "imgname")
+    private Goods goods;
+	
 	private String question;
+	
 	private String answer;
 	
 	@CreationTimestamp
     @Column(updatable = false, name="createdat")
-    private LocalDateTime createdAt; //가입일
+    private LocalDateTime createdAt; //질문일
 	
 	@CreationTimestamp
     @Column(updatable = false, name="answeredat")
-    private LocalDateTime answeredAt; //가입일
+    private LocalDateTime answeredAt; //대답일
+
+	
+	@Column(columnDefinition = "TINYINT(1)")
+	@Builder.Default
+	private boolean remain = true;
 	
 	private String answerusername;
+	
+	
 	
 }

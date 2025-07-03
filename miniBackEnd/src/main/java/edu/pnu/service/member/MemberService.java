@@ -12,8 +12,11 @@ import edu.pnu.domain.Member;
 import edu.pnu.domain.OrderAddress;
 import edu.pnu.domain.OrderItem;
 import edu.pnu.domain.OrderList;
+import edu.pnu.domain.QnA;
 import edu.pnu.domain.ReviewList;
 import edu.pnu.domain.WishList;
+import edu.pnu.dto.goods.QnAGoodsInfoDTO;
+import edu.pnu.dto.goods.QnAListDTO;
 import edu.pnu.dto.goods.WishListDTO;
 import edu.pnu.dto.member.MemberInfoDTO;
 import edu.pnu.dto.member.MemberResponseDTO;
@@ -23,6 +26,7 @@ import edu.pnu.persistence.GoodsRepository;
 import edu.pnu.persistence.MemberRepository;
 import edu.pnu.persistence.OrderAddressRepository;
 import edu.pnu.persistence.OrderListRepository;
+import edu.pnu.persistence.QnARepository;
 import edu.pnu.persistence.ReviewRepository;
 import edu.pnu.persistence.WishListRepository;
 import jakarta.transaction.Transactional;
@@ -39,6 +43,7 @@ public class MemberService {
 	private final WishListRepository wishListRepo;// 문의글 등
 	private final PasswordEncoder passwordEncoder; // 비밀번호 인코딩
 	private final GoodsRepository goodsRepo;
+	private final QnARepository qnaRepo;
 
 	// 1. 내 정보 조회
 	@Transactional
@@ -267,4 +272,61 @@ public class MemberService {
 	public boolean heartOn(String username, String imgname, boolean remain) {
 	    return wishListRepo.existsByMember_UsernameAndGoods_ImgnameAndRemain(username, imgname, remain);
 	}
+	
+	
+	
+	// qna 목록 조회
+		public List<QnAListDTO> getMyQnA(String username) {
+			return qnaRepo.findAllByMember_Username(username)
+			        .stream()
+			        .filter(r -> r.isRemain())
+			        .map(QnAListDTO::fromEntity)
+			        .toList();
+		}
+		
+		// qna 상품 조회
+		public QnAGoodsInfoDTO getGoodsInfo(String imgname) {
+			Goods goods = goodsRepo.findByImgname(imgname);
+			
+			return QnAGoodsInfoDTO.fromEntity(goods);
+		}
+		
+
+		// 리뷰 추가 (orderid 기준으로 예시, imgname으로 추가하고 싶다면 구조 조정 필요)
+		public List<QnAListDTO> addMyQnA(String username, String imgname, String question) {
+		    Member member = memberRepo.findByUsername(username)
+		        .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+		    Goods goods = goodsRepo.findByImgname(imgname);
+		    if (goods == null) throw new IllegalArgumentException("상품 없음");
+		    
+		    // QnA 엔티티 생성 및 저장
+		    QnA qna = QnA.builder()
+		        .member(member)
+		        .goods(goods)
+		        .question(question)
+		        .build();
+		    qnaRepo.save(qna);
+
+		    return qnaRepo.findAllByMember_Username(username)
+			        .stream()
+			        .filter(r -> r.isRemain())
+			        .map(QnAListDTO::fromEntity)
+			        .toList();
+		
+		}
+
+		// 리뷰 논리 삭제
+		public List<QnAListDTO> deleteMyQnA(String username, Long qaid) {
+		    QnA qna = qnaRepo.findByMember_UsernameAndQaid(username, qaid)
+		        .orElseThrow(() -> new IllegalArgumentException("QnA 없음"));
+		    qna.setRemain(false);
+		    qnaRepo.save(qna);
+
+		    // 삭제 후 남아있는 QnA만 반환
+		    return qnaRepo.findAllByMember_Username(username)
+		        .stream()
+		        .filter(QnA::isRemain)
+		        .map(QnAListDTO::fromEntity)
+		        .toList();
+		}
 }
