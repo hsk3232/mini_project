@@ -87,4 +87,17 @@ public class Member {
 	@Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderAddress> addresses = new ArrayList<>();
+	
+	@Override
+	public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (o == null || getClass() != o.getClass()) return false;
+	    Member member = (Member) o;
+	    return username != null && username.equals(member.username);
+	}
+
+	@Override
+	public int hashCode() {
+	    return username != null ? username.hashCode() : 0;
+	}
 }

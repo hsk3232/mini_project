@@ -47,5 +47,6 @@ public class CartItem {
         this.goodsOption = option;
         this.cart = cart;
         this.quantity = quantity;
+        this.remain = true;
     }
 }

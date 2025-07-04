@@ -24,7 +24,7 @@ public class SearchService {
     // 🔍 1. 키워드 기반 검색
     public List<GoodsDTO> getfilterSearch(SearchFilterDTO dto, Member member, String sort) {
     	Sort sortObj;
-    	
+    	System.out.println("🔴🔴🔴🔴🔴🔴");
     	System.out.println("[진입] : [SearchService] 키워드 기반 검색 진입 \n");
     	// 1-1. 정렬
     	switch (sort) {
@@ -50,7 +50,8 @@ public class SearchService {
                 dto.getKeyword()
         );
     	
-
+    	System.out.println(dto.getKeyword());
+    	
     	// 1-3. 회원이 검색할 시 키워드 저장
     	if (dto.getKeyword() != null && !dto.getKeyword().isBlank()) {
     	    spec = spec.and(CategorySpecification.hasProductName(dto.getKeyword()));

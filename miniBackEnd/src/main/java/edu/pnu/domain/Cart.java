@@ -46,4 +46,9 @@ public class Cart {
 	    this.member = member;
 	}
 	
+	
+	public void addCartItem(CartItem item) {
+	    this.cartItems.add(item);
+	    item.setCart(this); // 양방향 동기화
+	}
 }

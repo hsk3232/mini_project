@@ -54,7 +54,6 @@ public class MemberService {
 		return MemberResponseDTO.fromEntity(member);
 	}
 
-	
 	// 2. 기본 정보 변경
 	public MemberResponseDTO updateMemberInfo(String username, MemberInfoDTO dto) {
 		// ✅ 여기서 member는 엔티티
@@ -71,22 +70,20 @@ public class MemberService {
 		return MemberResponseDTO.fromEntity(member);
 	}
 
-	
 	// 3. 비밀번호 변경 로직
 	@Transactional
 	public void changePassword(String username, String currentPassword, String newPassword) {
-	    Member member = memberRepo.findById(username)
-	            .orElseThrow(() -> new IllegalArgumentException("[오류] 회원 정보가 없습니다: " + username));
+		Member member = memberRepo.findById(username)
+				.orElseThrow(() -> new IllegalArgumentException("[오류] 회원 정보가 없습니다: " + username));
 
-	    if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
-	        throw new IllegalArgumentException("[오류] 현재 비밀번호가 일치하지 않습니다.");
-	    }
+		if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+			throw new IllegalArgumentException("[오류] 현재 비밀번호가 일치하지 않습니다.");
+		}
 
-	    member.setPassword(passwordEncoder.encode(newPassword));
-	    memberRepo.save(member);
+		member.setPassword(passwordEncoder.encode(newPassword));
+		memberRepo.save(member);
 	}
 
-	
 	// 4-1. 배송지 목록 조회
 	@Transactional
 	public List<OrderAddressDTO> getMyAddresses(String username) {
@@ -99,11 +96,12 @@ public class MemberService {
 			return List.of();
 		}
 
-		return addresses.stream().map(OrderAddressDTO::fromEntity).toList();
+		return addresses
+				.stream()
+				.map(OrderAddressDTO::fromEntity)
+				.toList();
 	}
 
-	
-	
 	// 4-2. 배송지 추가
 	@Transactional // 변경된 값 즉시 감지
 	public OrderAddressDTO addMyAddresses(String username, OrderAddressDTO newAddr) {
@@ -114,16 +112,21 @@ public class MemberService {
 			throw new IllegalArgumentException("[오류] 주소 데이터를 모두 채워 주세요");
 		}
 
-		OrderAddress addr = OrderAddress.builder().member(member).name(newAddr.getName()).zip(newAddr.getZip())
-				.address1(newAddr.getAddress1()).address2(newAddr.getAddress2()).phone(newAddr.getPhone())
-				.main(newAddr.isMain()).build();
+		OrderAddress addr = OrderAddress.builder()
+				.member(member)
+				.name(newAddr.getName())
+				.zip(newAddr.getZip())
+				.address1(newAddr.getAddress1())
+				.address2(newAddr.getAddress2())
+				.phone(newAddr.getPhone())
+				.main(newAddr.isMain())
+				.build();
 
 		OrderAddress saved = orderAddrRepo.save(addr);
 		System.out.println("[저장 성공] 저장된 Addr: " + saved);
 		return OrderAddressDTO.fromEntity(saved);
 	}
 
-	
 	// 4-3. 배송 주소 수정
 	@Transactional
 	public OrderAddressDTO updateMyAddresses(String username, OrderAddressDTO newAddr) {
@@ -155,7 +158,6 @@ public class MemberService {
 		// ✅ 저장 후 반환
 		return OrderAddressDTO.fromEntity(addr);
 	}
-	
 
 	// 4-4. 배송 주소 삭제
 	@Transactional
@@ -167,75 +169,73 @@ public class MemberService {
 		orderAddrRepo.save(addr);
 		return getMyAddresses(username);
 	}
-	
-	
 
 	// 리뷰 목록 조회
 	public List<ReviewListDTO> getMyReviews(String username) {
-		return reviewRepo.findAllByMember_Username(username)
-		        .stream()
-		        .filter(r -> r.isRemain())
-		        .map(ReviewListDTO::fromEntity)
-		        .toList();
+		return reviewRepo.findAllByMember_Username(username).stream().filter(r -> r.isRemain())
+				.map(ReviewListDTO::fromEntity).toList();
 	}
 
 	// 리뷰 추가 (orderid 기준으로 예시, imgname으로 추가하고 싶다면 구조 조정 필요)
-	public List<ReviewListDTO> addMyReviewList(String username, Long orderid, String optionid, String reviewtext, int rating) {
-	    // 1. 유저 검증
-	    Member member = memberRepo.findByUsername(username)
-	        .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
-	    // 2. 주문 검증
-	    OrderList order = orderListRepo.findById(orderid)
-	        .orElseThrow(() -> new IllegalArgumentException("주문 없음"));
-	    // 3. 해당 옵션의 주문 항목(OrderItem) 찾기
-	    OrderItem targetItem = order.getItems().stream()
-	        .filter(i -> i.getGoodsOption().getOptionid().equals(optionid))
-	        .findFirst()
-	        .orElseThrow(() -> new IllegalArgumentException("해당 옵션의 주문 항목이 없음"));
-	    // 4. 옵션과 상품 꺼내기
-	    GoodsOption option = targetItem.getGoodsOption();
-	    Goods goods = option.getGoods();
+	public List<ReviewListDTO> addMyReviewList(String username, Long orderid, String optionid, String reviewtext,
+			int rating) {
+		// 1. 유저 검증
+		Member member = memberRepo.findByUsername(username)
+				.orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+		// 2. 주문 검증
+		OrderList order = orderListRepo.findById(orderid)
+				.orElseThrow(() -> new IllegalArgumentException("주문 없음"));
+		// 3. 해당 옵션의 주문 항목(OrderItem) 찾기
+		OrderItem targetItem = 
+				order.getItems()
+				.stream()
+				.filter(i -> i.getGoodsOption()
+						.getOptionid()
+						.equals(optionid))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("해당 옵션의 주문 항목이 없음"));
+		// 4. 옵션과 상품 꺼내기
+		GoodsOption option = targetItem.getGoodsOption();
+		Goods goods = option.getGoods();
 
-	    // 5. 중복 리뷰 체크 (상품 옵션별로만 리뷰 하나씩 허용)
-	    boolean alreadyReviewed = reviewRepo.existsByMember_UsernameAndOrderList_OrderidAndGoodsOption_Optionid(username, orderid, optionid);
-	    if (!alreadyReviewed) {
-	        ReviewList review = ReviewList.builder()
-	            .member(member)
-	            .orderList(order)
-	            .goods(goods)
-	            .goodsOption(option)
-	            .reviewtext(reviewtext)
-	            .rating(rating)
-	            .createdat(LocalDateTime.now())
-	            .remain(true)
-	            .build();
+		// 5. 중복 리뷰 체크 (상품 옵션별로만 리뷰 하나씩 허용)
+		boolean alreadyReviewed = reviewRepo.existsByMember_UsernameAndOrderList_OrderidAndGoodsOption_Optionid(username, orderid, optionid);
+		
+		if (!alreadyReviewed) {
+			ReviewList review = ReviewList.builder()
+					.member(member)
+					.orderList(order)
+					.goods(goods)
+					.goodsOption(option)
+					.reviewtext(reviewtext)
+					.rating(rating)
+					.createdat(LocalDateTime.now())
+					.remain(true)
+					.build();
 
-	        reviewRepo.save(review);
-	    }
-	    return getMyReviews(username);
+			reviewRepo.save(review);
+		}
+		return getMyReviews(username);
 	}
 
 	// 리뷰 논리 삭제
 	public List<ReviewListDTO> deleteMyReviewList(String username, Long orderid) {
 		ReviewList review = reviewRepo.findByMember_UsernameAndOrderList_Orderid(username, orderid)
-	    	    .orElseThrow(() -> new IllegalArgumentException("리뷰 없음"));
-	    	review.setRemain(false);
-	    	reviewRepo.save(review);
-	    return getMyReviews(username);
-	    
-	    
-	}
+				.orElseThrow(() -> new IllegalArgumentException("리뷰 없음"));
+		review.setRemain(false);
+		reviewRepo.save(review);
+		return getMyReviews(username);
 
+	}
 
 	// 6-1. wishList 조회
 	public List<WishListDTO> getMyWishList(String username) {
-	    return wishListRepo.findByMemberUsername(username).stream()
-	        .filter(WishList::isRemain)  // remain==true인 것만 남김
-	        .map(WishListDTO::fromEntity)
-	        .toList();
+		return wishListRepo.findByMemberUsername(username)
+				.stream()
+				.filter(WishList::isRemain) // remain==true인 것만 남김
+				.map(WishListDTO::fromEntity).toList();
 	}
 
-	
 	// 6-2. wishList 추가
 	public List<WishListDTO> addMyWishList(String username, String imgname) {
 		// 1. 중복 체크
@@ -243,90 +243,90 @@ public class MemberService {
 		if (!exists) {
 			Member member = memberRepo.findByUsername(username).orElseThrow();
 			Goods goods = goodsRepo.findByImgname(imgname);
-			WishList wish = WishList.builder().member(member).goods(goods).remain(true) // 논리 삭제라면 true로 기본 설정
+			WishList wish = WishList.builder()
+					.member(member)
+					.goods(goods)
+					.remain(true) // 논리 삭제라면 true로 기본 설정
 					.build();
 			wishListRepo.save(wish);
 		}
 		// 2. 항상 현재 목록 반환
 		return wishListRepo.findByMemberUsername(username).stream().map(WishListDTO::fromEntity).toList();
 	}
-	
-	
+
 	// 6-3. wishList 삭제
 	public List<WishListDTO> deleteMyWishList(String username, String imgname) {
-	    WishList wish = wishListRepo.findByMember_UsernameAndGoods_Imgname(username, imgname);
-	    if (wish == null) {
-	        throw new IllegalArgumentException("해당 찜이 존재하지 않습니다.");
-	    }
-	    wishListRepo.delete(wish);
+		WishList wish = wishListRepo.findByMember_UsernameAndGoods_Imgname(username, imgname);
+		if (wish == null) {
+			throw new IllegalArgumentException("해당 찜이 존재하지 않습니다.");
+		}
+		wishListRepo.delete(wish);
 
-	    return wishListRepo.findByMemberUsername(username).stream()
-	    	.filter(WishList::isRemain)
-	        .map(WishListDTO::fromEntity)
-	        .toList();
+		return wishListRepo.findByMemberUsername(username)
+				.stream()
+				.filter(WishList::isRemain)
+				.map(WishListDTO::fromEntity)
+				.toList();
 	}
 
-	
-	
 	// 6-4. wishList on/ off
 	public boolean heartOn(String username, String imgname, boolean remain) {
-	    return wishListRepo.existsByMember_UsernameAndGoods_ImgnameAndRemain(username, imgname, remain);
+		return wishListRepo.existsByMember_UsernameAndGoods_ImgnameAndRemain(username, imgname, remain);
 	}
-	
-	
-	
+
 	// qna 목록 조회
-		public List<QnAListDTO> getMyQnA(String username) {
-			return qnaRepo.findAllByMember_Username(username)
-			        .stream()
-			        .filter(r -> r.isRemain())
-			        .map(QnAListDTO::fromEntity)
-			        .toList();
-		}
-		
-		// qna 상품 조회
-		public QnAGoodsInfoDTO getGoodsInfo(String imgname) {
-			Goods goods = goodsRepo.findByImgname(imgname);
-			
-			return QnAGoodsInfoDTO.fromEntity(goods);
-		}
-		
+	public List<QnAListDTO> getMyQnA(String username) {
+		return qnaRepo.findAllByMember_Username(username)
+				.stream()
+				.filter(r -> r.isRemain())
+				.map(QnAListDTO::fromEntity)
+				.toList();
+	}
 
-		// 리뷰 추가 (orderid 기준으로 예시, imgname으로 추가하고 싶다면 구조 조정 필요)
-		public List<QnAListDTO> addMyQnA(String username, String imgname, String question) {
-		    Member member = memberRepo.findByUsername(username)
-		        .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
-		    Goods goods = goodsRepo.findByImgname(imgname);
-		    if (goods == null) throw new IllegalArgumentException("상품 없음");
-		    
-		    // QnA 엔티티 생성 및 저장
-		    QnA qna = QnA.builder()
-		        .member(member)
-		        .goods(goods)
-		        .question(question)
-		        .build();
-		    qnaRepo.save(qna);
+	// qna 상품 조회
+	public QnAGoodsInfoDTO getGoodsInfo(String imgname) {
+		Goods goods = goodsRepo.findByImgname(imgname);
 
-		    return qnaRepo.findAllByMember_Username(username)
-			        .stream()
-			        .filter(r -> r.isRemain())
-			        .map(QnAListDTO::fromEntity)
-			        .toList();
-		
+		return QnAGoodsInfoDTO.fromEntity(goods);
+	}
+
+	// 리뷰 추가 (orderid 기준으로 예시, imgname으로 추가하고 싶다면 구조 조정 필요)
+	public List<QnAListDTO> addMyQnA(String username, String imgname, String question) {
+		Member member = memberRepo.findByUsername(username)
+				.orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+		Goods goods = goodsRepo.findByImgname(imgname);
+		if (goods == null) {
+			goods = null;
 		}
 
-		// 리뷰 논리 삭제
-		public List<QnAListDTO> deleteMyQnA(String username, Long qaid) {
-		    QnA qna = qnaRepo.findByMember_UsernameAndQaid(username, qaid)
-		        .orElseThrow(() -> new IllegalArgumentException("QnA 없음"));
-		    qna.setRemain(false);
-		    qnaRepo.save(qna);
+		// QnA 엔티티 생성 및 저장
+		QnA qna = QnA.builder()
+				.member(member)
+				.goods(goods)
+				.question(question)
+				.build();
+		qnaRepo.save(qna);
 
-		    // 삭제 후 남아있는 QnA만 반환
-		    return qnaRepo.findAllByMember_Username(username)
-		        .stream()
-		        .filter(QnA::isRemain)
-		        .map(QnAListDTO::fromEntity)
-		        .toList();
-		}
+		return qnaRepo.findAllByMember_Username(username)
+				.stream()
+				.filter(r -> r.isRemain())
+				.map(QnAListDTO::fromEntity)
+				.toList();
+
+	}
+
+	// 리뷰 논리 삭제
+	public List<QnAListDTO> deleteMyQnA(String username, Long qaid) {
+		QnA qna = qnaRepo.findByMember_UsernameAndQaid(username, qaid)
+				.orElseThrow(() -> new IllegalArgumentException("QnA 없음"));
+		qna.setRemain(false);
+		qnaRepo.save(qna);
+
+		// 삭제 후 남아있는 QnA만 반환
+		return qnaRepo.findAllByMember_Username(username)
+				.stream()
+				.filter(QnA::isRemain)
+				.map(QnAListDTO::fromEntity)
+				.toList();
+	}
 }

@@ -1,5 +1,9 @@
 package edu.pnu.dto.goods;
 
+import java.util.Collections;
+import java.util.List;
+
+import edu.pnu.domain.Goods;
 import edu.pnu.domain.ImgAdress;
 import edu.pnu.domain.QnA;
 import lombok.AllArgsConstructor;
@@ -27,37 +31,60 @@ public class QnAListDTO {
     private String username;
     
     public static QnAListDTO fromEntity(QnA q) {
-        String imageUrl = q.getGoods().getImgAdressList().stream()
-            .filter(ImgAdress::isIsmain)            // ismain == true 필터
-            .map(ImgAdress::getImgUrl)              // 이미지 URL 추출
-            .findFirst()
-            .orElse(null);                          // 없으면 null 반환
+        Goods goods = q.getGoods();
+
+        // goods가 null일 수 있으니 안전하게 처리!
+        String imageUrl = null;
+        String productName = null;
+        String imgname = null;
+        List<ImgAdress> imgAdressList = Collections.emptyList();
+
+        if (goods != null) {
+            imageUrl = goods.getImgAdressList().stream()
+                .filter(ImgAdress::isIsmain)
+                .map(ImgAdress::getImgUrl)
+                .findFirst()
+                .orElse(null);
+            productName = goods != null ? goods.getProductName() : "상품 없음";
+            imgname = goods.getImgname();
+            imgAdressList = goods.getImgAdressList();
+        }
 
         return QnAListDTO.builder()
-        	.qaid(q.getQaid())
+            .qaid(q.getQaid())
             .imageUrl(imageUrl)
-            .productName(q.getGoods().getProductName())
+            .productName(productName)
             .createdat(q.getCreatedAt().toLocalDate().toString())
-            .imgname(q.getGoods().getImgname())
+            .imgname(imgname)
             .question(q.getQuestion())
             .remain(q.isRemain())
+            .username(q.getMember() != null ? q.getMember().getUsername() : null)
             .build();
     }
     
     public static QnAListDTO fromEntity(String username, QnA q) {
-        String imageUrl = q.getGoods().getImgAdressList().stream()
-            .filter(ImgAdress::isIsmain)            // ismain == true 필터
-            .map(ImgAdress::getImgUrl)              // 이미지 URL 추출
-            .findFirst()
-            .orElse(null);                          // 없으면 null 반환
+        Goods goods = q.getGoods();
+
+        String imageUrl = null;
+        String productName = null;
+        String imgname = null;
+        if (goods != null) {
+            imageUrl = goods.getImgAdressList().stream()
+                .filter(ImgAdress::isIsmain)
+                .map(ImgAdress::getImgUrl)
+                .findFirst()
+                .orElse(null);
+            productName = goods != null ? goods.getProductName() : "상품 없음";
+            imgname = goods.getImgname();
+        }
 
         return QnAListDTO.builder()
-        	.qaid(q.getQaid())
-        	.username(q.getMember().getUsername())
+            .qaid(q.getQaid())
+            .username(username != null ? username : (q.getMember() != null ? q.getMember().getUsername() : null))
             .imageUrl(imageUrl)
-            .productName(q.getGoods().getProductName())
+            .productName(productName)
             .createdat(q.getCreatedAt().toLocalDate().toString())
-            .imgname(q.getGoods().getImgname())
+            .imgname(imgname)
             .question(q.getQuestion())
             .remain(q.isRemain())
             .build();

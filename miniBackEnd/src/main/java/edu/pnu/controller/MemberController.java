@@ -1,8 +1,11 @@
 package edu.pnu.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,9 +62,14 @@ public class MemberController {
 	// 2-2. 비밀번호 변경
 	@PatchMapping("/password")
 	public ResponseEntity<String> changePassword(Principal principal, @RequestBody PasswordChangeRequestDTO req) {
-	    String username = principal.getName();
-	    memberService.changePassword(username, req.getCurrentPassword(), req.getNewPassword());
-	    return ResponseEntity.ok("비밀번호 변경 완료");
+		try {
+			String username = principal.getName();
+			memberService.changePassword(username, req.getCurrentPassword(), req.getNewPassword());
+			return ResponseEntity.ok("비밀번호 변경 완료");
+		}catch (IllegalArgumentException e) {
+			System.out.println("[경고/오류] : [MemberController] 현재 비밀번호가 일치하지 않음 \n");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
 	}
 
 	// 2-3-1. 배송지 목록 확인
@@ -177,6 +185,18 @@ public class MemberController {
 		boolean result = memberService.heartOn(username, imgname, remain);
 
 		return result;
+	}
+	
+	
+	// 여러 imgname의 wish 여부를 한 번에 확인하는 API (추가)
+	@GetMapping("/heartOnList")
+	public Map<String, Boolean> heartOnList(Principal principal, @RequestParam List<String> imgnames) {
+	    String username = principal.getName();
+	    Map<String, Boolean> result = new HashMap<>();
+	    for (String imgname : imgnames) {
+	        result.put(imgname, memberService.heartOn(username, imgname, true));
+	    }
+	    return result;
 	}
 	
 	// 4. qna 목록 조회

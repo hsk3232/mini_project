@@ -24,13 +24,11 @@ public class SearchController {
 	private final SearchService searchService;
 	private final MemberRepository memberRepo;
 
-
-
 	// 필터 검색 (GET 방식)
 	@GetMapping("/search")
 	public List<GoodsDTO> getfilterSearch(
-			
-			// DTO로 수동 매핑 => @ModelAttribute로 인해 필요 없어짐.
+
+	// DTO로 수동 매핑 => @ModelAttribute로 인해 필요 없어짐.
 //			@RequestParam(required = false) String main,
 //			@RequestParam(required = false) String mid,
 //			@RequestParam(required = false) String detail,
@@ -41,12 +39,17 @@ public class SearchController {
 //			@RequestParam(required = false) Integer maxPrice,
 
 			@ModelAttribute SearchFilterDTO dto, // ✅ 자동 바인딩 처리
-			Principal principal, 
-			@RequestParam(defaultValue = "newest") String sort) {
-
+			Principal principal, @RequestParam(defaultValue = "newest") String sort) {
+		if (principal != null) {
+		    System.out.println("로그인 O: " + principal.getName());
+		} else {
+		    System.out.println("로그인 X: principal이 null입니다.");
+		}
+		System.out.println("🔴🔴🔴🔴🔴🔴");
 		Member member = null;
 		if (principal != null) {
 			member = memberRepo.findByUsername(principal.getName()).orElse(null);
+			System.out.println(member.getUsername());
 			System.out.println("[성공] : [SearchController] 회원 정보를 찾았다. \n");
 		}
 
@@ -60,7 +63,7 @@ public class SearchController {
 //			dto.setPrint(print);
 //			dto.setMinPrice(minPrice);
 //			dto.setMaxPrice(maxPrice);
-
+		System.out.println("🔴🔴🔴🔴🔴🔴");
 		return searchService.getfilterSearch(dto, member, sort);
 	}
 }

@@ -38,26 +38,40 @@ public class CartService {
     // 1️⃣ 장바구니 담기 (없으면 카트 생성)
     @Transactional
     public void addToCart(List<CartItemDTO> items, String username) {
-        Member member = memberRepo.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("회원 없음: " + username));
+        try {
+            Member member = memberRepo.findByUsername(username)
+                    .orElseThrow(() -> new IllegalArgumentException("회원 없음: " + username));
 
-        Cart cart = cartRepo.findByMember_Username(username)
-                .orElseGet(() -> {
-                    Cart newCart = new Cart(member);
-                    return cartRepo.save(newCart);
-                });
+            Cart cart = cartRepo.findByMember_Username(username)
+                    .orElseGet(() -> {
+                        Cart newCart = new Cart(member);
+                        return cartRepo.save(newCart);
+                    });
 
-        for (CartItemDTO d : items) {
-            GoodsOption option = goodsOptionRepo.findById(d.getOptionid())
-                    .orElseThrow(() -> new IllegalArgumentException("옵션 없음: " + d.getOptionid()));
+            for (CartItemDTO d : items) {
+                try {
+                    GoodsOption option = goodsOptionRepo.findById(d.getOptionid())
+                            .orElseThrow(() -> new IllegalArgumentException("옵션 없음: " + d.getOptionid()));
 
-            CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(d.getOptionid(), cart).orElse(null);
-            if (item != null) {
-                item.setQuantity(item.getQuantity() + d.getQuantity());
-            } else {
-                CartItem newItem = new CartItem(option, cart, d.getQuantity());
-                cartItemRepo.save(newItem);
+                    CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(d.getOptionid(), cart).orElse(null);
+                    if (item != null) {
+                        item.setQuantity(item.getQuantity() + d.getQuantity());
+                    } else {
+                        CartItem newItem = new CartItem(option, cart, d.getQuantity());
+                        cart.getCartItems().add(newItem);
+                        cartItemRepo.save(newItem);
+                    }
+                } catch (Exception e) {
+                    // 각 아이템 단위 예외 로깅 (한 아이템만 문제 있을 때)
+                    System.out.println("[ERROR] 장바구니 아이템 추가 실패: " + d.getOptionid());
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            // 전체 트랜잭션 예외 로깅
+            System.out.println("[ERROR] addToCart 전체 실패: " + e.getMessage());
+            e.printStackTrace();
+            throw e; // 트랜잭션 롤백을 위해 재던짐 (원하면 생략)
         }
     }
 
@@ -94,7 +108,7 @@ public class CartService {
         for (CartRemainDTO dto : items.getItems()) {
             CartItem item = cartItemRepo.findByGoodsOption_OptionidAndCart(dto.getOptionid(), cart)
                     .orElseThrow(() -> new IllegalArgumentException("해당 상품 없음: " + dto.getOptionid()));
-            item.setRemain(!item.isRemain());
+            item.setRemain(false);
             cartItemRepo.save(item);
         }
     }

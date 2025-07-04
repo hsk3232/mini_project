@@ -31,6 +31,7 @@ public class CartController {
         System.out.println("[진입] : [CartController] 장바구니 담기 진입");
         
         String username = principal.getName();
+        
         System.out.println("[실행] : 담긴 상품 " + dto.getItems().toString());
     	
         cartService.addToCart(dto.getItems(), username);

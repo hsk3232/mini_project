@@ -35,15 +35,36 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
 		// public 경로는 토큰 확인 없이 무조건 통과
 		String uri = request.getRequestURI();
-		// ⭐ 1. public 경로는 무조건 통과!
-		if (uri.startsWith("/api/public/")) {
-			filterChain.doFilter(request, response);
-			return;
-		}
+	    String srcToken = request.getHeader(HttpHeaders.AUTHORIZATION); // ⭐️ 위치 바뀜 // 요청 헤더에서 Authorization을 얻어온다.
+
+	    // ⭐️ [수정] public 경로는 토큰이 있으면 인증, 없으면 그냥 통과!
+	    if (uri.startsWith("/api/public/")) {
+	        if (srcToken != null && srcToken.startsWith("Bearer ")) {
+	            try {
+	                String jwtToken = srcToken.replace("Bearer ", "");
+	                DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256("edu.pnu.jwt")).build().verify(jwtToken);
+	                String username = decodedJWT.getClaim("username").asString();
+
+	                if (username != null) {
+	                    Optional<Member> opt = memberRepository.findById(username);
+	                    if (opt.isPresent()) {
+	                        Member findmember = opt.get();
+	                        User user = new User(findmember.getUsername(), findmember.getPassword(),
+	                                AuthorityUtils.createAuthorityList("ROLE_" + findmember.getRole().toString()));
+	                        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+	                        SecurityContextHolder.getContext().setAuthentication(auth);
+	                    }
+	                }
+	            } catch (Exception e) {
+	                // 토큰 오류는 무시(비회원처럼 동작)
+	            }
+	        }
+	        filterChain.doFilter(request, response);
+	        return;
+	    }
 
 		System.out.println("[진입] : [JWTAuthorizationFilter] 토큰 확인 필터 진입");
-
-		String srcToken = request.getHeader(HttpHeaders.AUTHORIZATION); // 요청 헤더에서 Authorization을 얻어온다.
+		//String srcToken = request.getHeader(HttpHeaders.AUTHORIZATION); 
 		System.out.println("[발행된 토큰] : " + srcToken);
 
 		if (srcToken == null || !srcToken.startsWith("Bearer ")) { // 없거나 “Bearer ”로 시작하지 않는다면
